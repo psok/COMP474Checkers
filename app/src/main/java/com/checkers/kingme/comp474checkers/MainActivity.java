@@ -93,7 +93,7 @@ public class MainActivity extends ActionBarActivity
         String idString = v.getIdX() + ":" + v.getIdY();
 
         Toast.makeText(MainActivity.this,
-                "Toogled:\n" +
+                "Toggled:\n" +
                         idString + "\n" +
                         touchOn,
                 Toast.LENGTH_SHORT).show();
