@@ -34,8 +34,14 @@ public class Player {
         this.myName = myName;
     }
 
-    public void setWinner(CurrentBoard board) {
+    public void setWinner(boolean isWinner) {
+        this.isWinner = isWinner;
+    }
+
+    public boolean getIsWinnerResult(CurrentBoard board) {
         this.isWinner = true;
+        int opponentPiece = 0;
+        int myPiece = 0;
         Color opponentColor = Color.black;
         if (myPieceColor == Color.black) {
             opponentColor = Color.red;
@@ -44,10 +50,18 @@ public class Player {
         }
         for (Piece piece : board.getCheckerBoard()) {
             if (piece.getColor() == opponentColor) {
-                this.isWinner = false;
-                break;
+                opponentPiece++;
+            } else if (piece.getColor() == myPieceColor) {
+                myPiece++;
             }
         }
 
+        if (opponentPiece == 0 && myPiece > 0) {
+            this.isWinner = true;
+        } else {
+            this.isWinner = false;
+        }
+
+        return isWinner;
     }
 }

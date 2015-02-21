@@ -9,5 +9,4 @@ public class HumanPlayer extends Player {
         super(myPieceColor,name);
     }
 
-
 }
