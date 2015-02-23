@@ -23,11 +23,11 @@ public class MyView extends View {
     int idY = 0; //default
     int squareID = 0; //default
 
-    public MyView(Context context, int x, int y, int squareid) {
+    public MyView(Context context, int x, int y, int squareId) {
         super(context);
         idX = x;
         idY = y;
-        squareID = squareid;
+        squareID = squareId;
 
         init();
     }
