@@ -21,8 +21,9 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="80dp"
-        android:clickable="true"
-        android:onClick="sendMessage" />
+        android:clickable="false"
+        android:onClick="sendMessage"
+        android:visibility="invisible" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -38,11 +39,13 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageButton"
+        android:id="@+id/multiplayerButton"
         android:layout_below="@+id/imgLogo"
         android:layout_alignRight="@+id/startButton"
         android:layout_alignEnd="@+id/startButton"
         android:src="@drawable/multiplayer"
-        android:background="@android:color/transparent" />
+        android:background="@android:color/transparent"
+        android:clickable="true"
+        android:onClick="startVisibility" />
 
 </RelativeLayout>

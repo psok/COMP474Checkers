@@ -1,11 +1,9 @@
 package com.checkers.kingme.comp474checkers;
 
-/**
- * Created by Richa on 2/21/2015.
- */
+
 public class Player {
 
-    private Color myPieceColor;
+   private Color myPieceColor;
     private String myName;
     private boolean isWinner;
 
@@ -42,13 +40,13 @@ public class Player {
         this.isWinner = true;
         int opponentPiece = 0;
         int myPiece = 0;
-        Color opponentColor = Color.black;
-        if (myPieceColor == Color.black) {
-            opponentColor = Color.red;
-        } else if (myPieceColor == Color.red) {
-            opponentColor = Color.black;
+        Color opponentColor = Color.BLACK;
+        if (myPieceColor == Color.BLACK) {
+            opponentColor = Color.RED;
+        } else if (myPieceColor == Color.RED) {
+            opponentColor = Color.BLACK;
         }
-        for (Piece piece : board.getCheckerBoard()) {
+        for (Piece piece : board.getBoard()) {
             if (piece.getColor() == opponentColor) {
                 opponentPiece++;
             } else if (piece.getColor() == myPieceColor) {

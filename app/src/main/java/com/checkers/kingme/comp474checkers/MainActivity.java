@@ -4,9 +4,13 @@ import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 public class MainActivity extends ActionBarActivity
     {
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,5 +23,11 @@ public class MainActivity extends ActionBarActivity
         public void sendMessage(View view) {
             Intent intent = new Intent(this, Game.class);
             startActivity(intent);
+        }
+
+        public void startVisibility(View view) {
+            ImageButton btnStart= (ImageButton) findViewById(R.id.startButton);
+            btnStart.setVisibility(view.VISIBLE);
+
         }
 }

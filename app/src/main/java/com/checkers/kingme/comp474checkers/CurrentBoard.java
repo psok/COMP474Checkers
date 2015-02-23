@@ -1,25 +1,53 @@
 package com.checkers.kingme.comp474checkers;
 
-/**
- * Created by Richa on 2/21/2015.
- */
-public class CurrentBoard {
-    Piece[] checkerBoard = new Piece[32];
+import java.util.List;
+import java.util.Arrays;
 
-    public CurrentBoard(Piece[] checkerBoard){
-        this.checkerBoard = checkerBoard;
+
+public class CurrentBoard
+{
+    private List<Piece> checkersBoard;
+
+    public boolean isEmpty(int square)
+    {
+        return (checkersBoard.get(square - 1) == null);
     }
 
-    public Piece[] getCheckerBoard() {
-        return checkerBoard;
+    public Piece getPiece(int square)
+    {
+        return checkersBoard.get(square - 1);
     }
 
-    public void setCheckerBoard(Piece[] checkerBoard) {
-        this.checkerBoard = checkerBoard;
+    public void movePiece(int from, int to)
+    {
+        checkersBoard.set(to - 1, getPiece(from));
+        removePiece(from);
     }
 
-    public Piece getPiece(int square){
-        return checkerBoard[square];
+    public void removePiece(int place)
+    {
+        checkersBoard.set(place - 1, null);
     }
 
+    public Piece[] getBoard()
+    {
+        return checkersBoard.toArray(new Piece[32]);
+    }
+
+    public CurrentBoard()
+    {
+        Piece[] parr = {
+                new Piece(Color.BLACK), new Piece(Color.BLACK), new Piece(Color.BLACK),
+                new Piece(Color.BLACK), new Piece(Color.BLACK), new Piece(Color.BLACK),
+                new Piece(Color.BLACK), new Piece(Color.BLACK), new Piece(Color.BLACK),
+                new Piece(Color.BLACK), new Piece(Color.BLACK), new Piece(Color.BLACK),
+                null, null, null, null, null, null, null, null, new Piece(Color.RED),
+                new Piece(Color.RED), new Piece(Color.RED), new Piece(Color.RED),
+                new Piece(Color.RED), new Piece(Color.RED), new Piece(Color.RED),
+                new Piece(Color.RED), new Piece(Color.RED), new Piece(Color.RED),
+                new Piece(Color.RED), new Piece(Color.RED)
+        };
+
+        checkersBoard = Arrays.asList(parr);
+    }
 }
