@@ -1,11 +1,9 @@
 package com.checkers.kingme.comp474checkers;
 
-/**
- * Created by Richa on 2/21/2015.
- */
+
 public class Player {
 
-    private Color myPieceColor;
+   private Color myPieceColor;
     private String myName;
     private boolean isWinner;
 
