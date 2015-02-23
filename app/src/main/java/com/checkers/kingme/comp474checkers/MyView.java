@@ -21,11 +21,14 @@ public class MyView extends View {
     private OnToggledListener toggledListener;
     int idX = 0; //default
     int idY = 0; //default
+    int squareID = 0; //default
 
-    public MyView(Context context, int x, int y) {
+    public MyView(Context context, int x, int y, int squareid) {
         super(context);
         idX = x;
         idY = y;
+        squareID = squareid;
+
         init();
     }
 
@@ -56,10 +59,10 @@ public class MyView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (touchOn) {
-            canvas.drawColor(Color.RED);
+        if (getSquareID()>0) {
+            canvas.drawColor(Color.BLACK);
         } else {
-            canvas.drawColor(Color.GRAY);
+            canvas.drawColor(Color.RED);
         }
     }
 
@@ -106,6 +109,10 @@ public class MyView extends View {
 
     public int getIdY(){
         return idY;
+    }
+
+    public int getSquareID(){
+        return squareID;
     }
 
 }

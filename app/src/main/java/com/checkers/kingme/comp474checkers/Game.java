@@ -22,13 +22,38 @@ public class Game extends ActionBarActivity
         setContentView(R.layout.activity_game);
 
         myGridLayout = (GridLayout)findViewById(R.id.mygrid);
-
+        int tempCount = 0;
+        boolean everyTwo = false;
+        boolean everyEight = true;
         int numOfCol = myGridLayout.getColumnCount();
         int numOfRow = myGridLayout.getRowCount();
         myViews = new MyView[numOfCol*numOfRow];
         for(int yPos=0; yPos<numOfRow; yPos++){
             for(int xPos=0; xPos<numOfCol; xPos++){
-                MyView tView = new MyView(this, xPos, yPos);
+                int squareId=-1;
+                if(everyEight) {
+                    if (everyTwo && everyEight) {
+                        tempCount++;
+                        squareId = tempCount;
+                        everyTwo = false;
+                        if (tempCount % 4 == 0) {
+                            everyTwo = true;
+                        }
+                        if (tempCount % 8 == 0) {
+                            everyTwo = false;
+                            everyEight = false;
+                        }
+
+                    } else {
+                        everyTwo = true;
+
+                    }
+                }
+                else{
+                    everyEight = true;
+
+                }
+                MyView tView = new MyView(this, xPos, yPos, squareId);
                 tView.setOnToggledListener(this);
                 myViews[yPos*numOfCol + xPos] = tView;
                 myGridLayout.addView(tView);
@@ -52,7 +77,8 @@ public class Game extends ActionBarActivity
                         //Set myGridLayout equal width and height
                         if(pWidth>=pHeight){
                             pLength = pHeight;
-                        }else{
+                        }
+                        else{
                             pLength = pWidth;
                         }
                         ViewGroup.LayoutParams pParams = myGridLayout.getLayoutParams();
@@ -90,7 +116,7 @@ public class Game extends ActionBarActivity
     public void OnToggled(MyView v, boolean touchOn) {
 
         //get the id string
-        String idString = v.getIdX() + ":" + v.getIdY();
+        String idString = v.getIdX() + ":" + v.getIdY() + "\nSquareID: " + v.getSquareID();
 
         Toast.makeText(Game.this,
                 "Toggled:\n" +
