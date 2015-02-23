@@ -255,7 +255,7 @@ public class CheckersGame
         }
     }
     
-    public boolean moveTo(int to)
+    public void moveTo(int to)
     {
         int difference = to - toMove;
 
@@ -269,5 +269,6 @@ public class CheckersGame
                 case -9:
             }
         }
+
     }
 }
