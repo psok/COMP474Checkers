@@ -1,35 +1,29 @@
 package com.checkers.kingme.comp474checkers;
 
 
-/**
- * Created by Richa on 2/21/2015.
- */
-public class Piece {
-
-    private Color color;
+public class Piece
+{
     private Rank rank;
+    private Color color;
 
-    public Piece(Color color, Rank rank){
-        this.color = color;
-        this.rank = rank;
-    }
-    public Color getColor() {
+    public Color getColor()
+    {
         return color;
     }
 
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
-    public Rank getRank() {
+    public Rank getRank()
+    {
         return rank;
     }
 
-    public void setRank(Rank rank) {
-        this.rank = rank;
+    public void crown()
+    {
+        rank = Rank.KING;
     }
 
-    public void Crown(){
-        this.rank = rank.king;
+    public Piece(Color color)
+    {
+        this.color = color;
+        rank = Rank.CHECKER;
     }
 }
