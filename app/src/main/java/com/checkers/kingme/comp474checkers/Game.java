@@ -54,8 +54,12 @@ public class Game extends ActionBarActivity
                 }
 
                 MyView tView = new MyView(this, xPos, yPos, squareId);
+                // 02/23/2015 Jessie:
+                // Check if 1 <= squareId <= 12, set isBlackPiece flag to true
+                // Check if 21 <= squareId <= 32, set isRedPiece flag to true
                 tView.isBlackPiece = (squareId >= 1 && squareId <= 12);
                 tView.isRedPiece = (squareId >= 21 && squareId <= 32);
+
                 tView.setOnToggledListener(this);
                 myViews[yPos*numOfCol + xPos] = tView;
                 myGridLayout.addView(tView);

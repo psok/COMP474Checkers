@@ -69,7 +69,7 @@ public class MyView extends View {
         if (getSquareID()>0) {
             canvas.drawColor(Color.DKGRAY);
 
-            // 02/23/2015 Jessie: place black or red piece
+            // 02/23/2015 Jessie: place black or red pieces on the board when start the game
             Bitmap blackPiece = BitmapFactory.decodeResource(getResources(), R.drawable.black_piece);
             Bitmap redPiece = BitmapFactory.decodeResource(getResources(), R.drawable.red_piece);
 
@@ -79,14 +79,13 @@ public class MyView extends View {
             Rect srcRect = new Rect(0, 0, getWidth(), getHeight());
             Rect dstRect = new Rect(srcRect);
 
-
             if(isBlackPiece) {
                 canvas.drawBitmap(blackPiece, srcRect, dstRect, null);
-
             }
             else if(isRedPiece) {
                 canvas.drawBitmap(redPiece, srcRect, dstRect, null);
             }
+            // Jessie ==END==
 
         } else {
             canvas.drawColor(Color.WHITE);
