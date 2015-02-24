@@ -11,7 +11,7 @@ public class CheckersSystem {
 
 
 
-    //default constructor
+    //Default constructor
     public CheckersSystem() {
         stateOfGame = new CheckersGame();
     }
@@ -19,7 +19,7 @@ public class CheckersSystem {
     /**
      * Determine is Computer Player Win
      *
-     * @return true if the game has ended and computer player win; and vise versa
+     * @return true if the game has ended and computer player win
      */
     public boolean isComputerPlayerWin() {
         return computerPlayer.getIsWinnerResult(stateOfGame.getBoard());
@@ -28,7 +28,7 @@ public class CheckersSystem {
     /**
      * Determine is Human Player Win
      *
-     * @return true if the game has ended and human player win; and vise versa
+     * @return true if the game has ended and human player win
      */
     public boolean isHumanPlayerWin() {
         return humanPlayer.getIsWinnerResult(stateOfGame.getBoard());
@@ -37,7 +37,7 @@ public class CheckersSystem {
     /**
      * Determine is Remote Player Win
      *
-     * @return true if the game has ended and remote player win; and vise versa
+     * @return true if the game has ended and remote player win
      */
     public boolean isRemotePlayerWin() {
         return remotePlayer.getIsWinnerResult(stateOfGame.getBoard());
@@ -65,5 +65,30 @@ public class CheckersSystem {
         this.humanPlayer = humanPlayer;
     }
 
+    /**
+     * Human player perform moving from a square to a square
+     *
+     * @param fromSquare a square id that the player is moving from
+     * @param toSquare   a square id that the player is moving to
+     * @return true if the player can move from the square to the square
+     */
+    public boolean move(int fromSquare, int toSquare) {
+        if (!isGameEnds()) {
+            if (stateOfGame.pickUp(fromSquare)) {
+                stateOfGame.moveTo(toSquare);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Determine the game has ended or not
+     *
+     * @return true if the game has ended
+     */
+    public boolean isGameEnds() {
+        return (!isHumanPlayerWin());
+    }
 }
 
