@@ -4,8 +4,13 @@ package com.checkers.kingme.comp474checkers;
  * Created by dalestoutjr on 2/20/15.
  */
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,6 +27,8 @@ public class MyView extends View {
     int idX = 0; //default
     int idY = 0; //default
     int squareID = 0; //default
+    boolean isBlackPiece;
+    boolean isRedPiece;
 
     public MyView(Context context, int x, int y, int squareId) {
         super(context);
@@ -60,9 +67,29 @@ public class MyView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         if (getSquareID()>0) {
-            canvas.drawColor(Color.BLACK);
+            canvas.drawColor(Color.DKGRAY);
+
+            // 02/23/2015 Jessie: place black or red piece
+            Bitmap blackPiece = BitmapFactory.decodeResource(getResources(), R.drawable.black_piece);
+            Bitmap redPiece = BitmapFactory.decodeResource(getResources(), R.drawable.red_piece);
+
+            blackPiece = Bitmap.createScaledBitmap(blackPiece, getWidth(), getHeight(), true);
+            redPiece = Bitmap.createScaledBitmap(redPiece, getWidth(), getHeight(), true);
+
+            Rect srcRect = new Rect(0, 0, getWidth(), getHeight());
+            Rect dstRect = new Rect(srcRect);
+
+
+            if(isBlackPiece) {
+                canvas.drawBitmap(blackPiece, srcRect, dstRect, null);
+
+            }
+            else if(isRedPiece) {
+                canvas.drawBitmap(redPiece, srcRect, dstRect, null);
+            }
+
         } else {
-            canvas.drawColor(Color.RED);
+            canvas.drawColor(Color.WHITE);
         }
     }
 

@@ -51,9 +51,11 @@ public class Game extends ActionBarActivity
                 }
                 else{
                     everyEight = true;
-
                 }
+
                 MyView tView = new MyView(this, xPos, yPos, squareId);
+                tView.isBlackPiece = (squareId >= 1 && squareId <= 12);
+                tView.isRedPiece = (squareId >= 21 && squareId <= 32);
                 tView.setOnToggledListener(this);
                 myViews[yPos*numOfCol + xPos] = tView;
                 myGridLayout.addView(tView);
@@ -93,9 +95,9 @@ public class Game extends ActionBarActivity
                             for(int xPos=0; xPos<numOfCol; xPos++){
                                 GridLayout.LayoutParams params =
                                         (GridLayout.LayoutParams)myViews[yPos*numOfCol + xPos].getLayoutParams();
-                                params.width = w - 2*MARGIN;
-                                params.height = h - 2*MARGIN;
-                                params.setMargins(MARGIN, MARGIN, MARGIN, MARGIN);
+                                params.width = w/* - 2*MARGIN*/;
+                                params.height = h/* - 2*MARGIN*/;
+                                //params.setMargins(MARGIN, MARGIN, MARGIN, MARGIN);
                                 myViews[yPos*numOfCol + xPos].setLayoutParams(params);
                             }
                         }
