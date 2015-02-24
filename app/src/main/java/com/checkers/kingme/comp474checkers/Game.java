@@ -17,11 +17,11 @@ public class Game extends ActionBarActivity
     GridLayout myGridLayout;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) { // creates multiple views of squares
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        myGridLayout = (GridLayout)findViewById(R.id.mygrid);
+        myGridLayout = (GridLayout)findViewById(R.id.mygrid); // creates legal checkerboard
         int tempCount = 0;
         boolean everyTwo = false;
         boolean everyEight = true;
@@ -70,7 +70,7 @@ public class Game extends ActionBarActivity
                 new OnGlobalLayoutListener(){
 
                     @Override
-                    public void onGlobalLayout() {
+                    public void onGlobalLayout() { // creates square based on screen resolution
 
                         int pLength;
                         final int MARGIN = 5;
@@ -92,22 +92,22 @@ public class Game extends ActionBarActivity
                         pParams.height = pLength;
                         myGridLayout.setLayoutParams(pParams);
 
-                        int w = pLength/numOfCol; //pWidth/numOfCol;
-                        int h = pLength/numOfRow; //pHeight/numOfRow;
+                        int w = pLength/numOfCol;
+                        int h = pLength/numOfRow;
 
                         for(int yPos=0; yPos<numOfRow; yPos++){
                             for(int xPos=0; xPos<numOfCol; xPos++){
                                 GridLayout.LayoutParams params =
                                         (GridLayout.LayoutParams)myViews[yPos*numOfCol + xPos].getLayoutParams();
-                                params.width = w/* - 2*MARGIN*/;
-                                params.height = h/* - 2*MARGIN*/;
+                                params.width = w;
+                                params.height = h;
                                 //params.setMargins(MARGIN, MARGIN, MARGIN, MARGIN);
                                 myViews[yPos*numOfCol + xPos].setLayoutParams(params);
                             }
                         }
 
                         Toast.makeText(Game.this,
-                                "numberOfGlobalLayoutCalled = " + numberOfGlobalLayoutCalled,
+                                "Checkerboard successfully created! ",
                                 Toast.LENGTH_SHORT).show();
                         numberOfGlobalLayoutCalled++;
 
@@ -119,7 +119,7 @@ public class Game extends ActionBarActivity
     }
 
     @Override
-    public void OnToggled(MyView v, boolean touchOn) {
+    public void OnToggled(MyView v, boolean touchOn) { // Toasts on view (square) touch
 
         //get the id string
         String idString = v.getIdX() + ":" + v.getIdY() + "\nSquareID: " + v.getSquareID();
