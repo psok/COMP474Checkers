@@ -528,4 +528,7 @@ public class CheckersGame
             this.turn = Color.BLACK;
         }
     }
+    public CurrentBoard getBoard() {
+        return board;
+    }
 }

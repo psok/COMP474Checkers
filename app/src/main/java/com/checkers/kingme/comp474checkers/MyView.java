@@ -4,15 +4,20 @@ package com.checkers.kingme.comp474checkers;
  * Created by dalestoutjr on 2/20/15.
  */
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
 public class MyView extends View {
 
-    public interface OnToggledListener {
+    public interface OnToggledListener { // interface between view and game
         void OnToggled(MyView v, boolean touchOn);
     }
 
@@ -22,6 +27,8 @@ public class MyView extends View {
     int idX = 0; //default
     int idY = 0; //default
     int squareID = 0; //default
+    boolean isBlackPiece;
+    boolean isRedPiece;
 
     public MyView(Context context, int x, int y, int squareId) {
         super(context);
@@ -47,12 +54,12 @@ public class MyView extends View {
         init();
     }
 
-    private void init() {
+    private void init() { //on creation defaults to false
         touchOn = false;
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {//  specs imposed MyView by
         setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
                 MeasureSpec.getSize(heightMeasureSpec));
     }
@@ -60,21 +67,40 @@ public class MyView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         if (getSquareID()>0) {
-            canvas.drawColor(Color.BLACK);
+            canvas.drawColor(Color.DKGRAY);
+
+            // 02/23/2015 Jessie: place black or red pieces on the board when start the game
+            Bitmap blackPiece = BitmapFactory.decodeResource(getResources(), R.drawable.black_piece);
+            Bitmap redPiece = BitmapFactory.decodeResource(getResources(), R.drawable.red_piece);
+
+            blackPiece = Bitmap.createScaledBitmap(blackPiece, getWidth(), getHeight(), true);
+            redPiece = Bitmap.createScaledBitmap(redPiece, getWidth(), getHeight(), true);
+
+            Rect srcRect = new Rect(0, 0, getWidth(), getHeight());
+            Rect dstRect = new Rect(srcRect);
+
+            if(isBlackPiece) {
+                canvas.drawBitmap(blackPiece, srcRect, dstRect, null);
+            }
+            else if(isRedPiece) {
+                canvas.drawBitmap(redPiece, srcRect, dstRect, null);
+            }
+            // Jessie ==END==
+
         } else {
-            canvas.drawColor(Color.RED);
+            canvas.drawColor(Color.WHITE);
         }
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(MotionEvent event) { //event definition; toggles view
         super.onTouchEvent(event);
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
 
                 touchOn = !touchOn;
-                invalidate();
+                invalidate(); // invalidates the view
 
                 if(toggledListener != null){
                     toggledListener.OnToggled(this, touchOn);
@@ -86,7 +112,7 @@ public class MyView extends View {
             case MotionEvent.ACTION_UP:
                 if (mDownTouch) {
                     mDownTouch = false;
-                    performClick();
+                    performClick(); // returns true
                     return true;
                 }
         }
@@ -94,24 +120,25 @@ public class MyView extends View {
     }
 
     @Override
-    public boolean performClick() {
+    public boolean performClick() { // click on view
         super.performClick();
         return true;
     }
 
-    public void setOnToggledListener(OnToggledListener listener){
+    public void setOnToggledListener(OnToggledListener listener){ // setter
+
         toggledListener = listener;
     }
 
-    public int getIdX(){
+    public int getIdX(){ // getter
         return idX;
     }
 
-    public int getIdY(){
+    public int getIdY(){ // getter
         return idY;
     }
 
-    public int getSquareID(){
+    public int getSquareID(){ // getter
         return squareID;
     }
 

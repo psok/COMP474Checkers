@@ -10,13 +10,13 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.androidtouchview.Game" >
 
-    <TextView
+    <!--<TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:autoLink="web"
         android:text="King Me Checkers Game"
-        android:textStyle="bold" />
+        android:textStyle="bold" />-->
 
     <GridLayout
         android:id="@+id/mygrid"
