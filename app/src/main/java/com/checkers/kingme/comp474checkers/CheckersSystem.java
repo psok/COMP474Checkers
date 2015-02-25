@@ -8,7 +8,7 @@ public class CheckersSystem {
     private ComputerPlayer computerPlayer;
     private RemotePlayer remotePlayer;
     private HumanPlayer humanPlayer;
-
+    //private CurrentBoard board;
 
 
     //Default constructor
@@ -89,6 +89,16 @@ public class CheckersSystem {
      */
     public boolean isGameEnds() {
         return (!isHumanPlayerWin());
+
+
+    }
+    /**
+     *
+     *
+     * @return  the current board
+     */
+    public CurrentBoard getTheBoard() {
+        return stateOfGame.getBoard();
     }
 }
 
