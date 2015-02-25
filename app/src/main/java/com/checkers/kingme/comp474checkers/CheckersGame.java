@@ -8,11 +8,9 @@ import java.util.ArrayList;
  * Author: Carlos
  * Description: Implements the game of checkers logic
  */
-public class CheckersGame
-{
+public class CheckersGame {
     // Exception to be thrown in case of programmer calling moveTo without having called pickUp first
-    static class MoveWithoutPickException extends RuntimeException
-    {
+    static class MoveWithoutPickException extends RuntimeException {
 
     }
 
@@ -21,7 +19,7 @@ public class CheckersGame
     private List<String> moveList;
     //private Player winner;
     //private CheckersSystem listener;
-    
+
     private int toMove; // this integer stores the position of the piece currently picked up
     private boolean jumps; // this flag is used to stop non-jump moves when jumps are possible
 
@@ -35,8 +33,7 @@ public class CheckersGame
 
     // Takes two positions diagonally two squares away in the board and returns the position of the
     // square in between
-    private int between(int here, int there)
-    {
+    private int between(int here, int there) {
         int difference, between;
 
         // off bounds
@@ -76,8 +73,7 @@ public class CheckersGame
 
     // Given a position, determines if there's a piece of the current turn colour that can perform
     // a capture right now (returns true if so).
-    private boolean canJump(int square)
-    {
+    private boolean canJump(int square) {
         int neighbor, nextNeighbor;
         Piece piece = board.getPiece(square);
 
@@ -130,8 +126,7 @@ public class CheckersGame
 
     // Given a square number, determines if there's a piece of the current turn color that can
     // move the an empty adjacent square right now (returns true if so)
-    private boolean canMove(int square)
-    {
+    private boolean canMove(int square) {
         int neighbor;
         Piece piece = board.getPiece(square);
 
@@ -171,11 +166,10 @@ public class CheckersGame
     }
 
     // Sets the jumps flag to true if any jumps can be made at this point
-    private void findJumps()
-    {
+    private void findJumps() {
         int square;
-        
-        for(square = 1; square <= 32; ++square) {
+
+        for (square = 1; square <= 32; ++square) {
             if (canJump(square)) {
                 jumps = true;
                 return;
@@ -186,11 +180,10 @@ public class CheckersGame
     }
 
     // determines if any moves can be made by the current player and returns true if so
-    private boolean existMoves()
-    {
+    private boolean existMoves() {
         int square;
 
-        for(square = 1; square <= 32; ++square) {
+        for (square = 1; square <= 32; ++square) {
             if (canMove(square)) {
                 return true;
             }
@@ -202,19 +195,18 @@ public class CheckersGame
     /* The following methods implement the checkers board algebra. Given a square, they return the
      * number of the upper left (UL), upper right (UR), lower left (LL) or upper right (UR) neighbour
      */
-    private int checkUL(int square)
-    {
+    private int checkUL(int square) {
         int location;
         int neighborSquare;
 
-        if (square < 1 || square > 32 ) {
+        if (square < 1 || square > 32) {
             return 0;
         }
 
         location = square % 8;
         neighborSquare = 0;
-        
-        switch(location) {
+
+        switch (location) {
             case 5:
                 return 0;
             case 1:
@@ -228,7 +220,7 @@ public class CheckersGame
             case 7:
                 neighborSquare = square - 5;
         }
-        
+
         if ((neighborSquare >= 1)) {
             return neighborSquare;
         } else {
@@ -236,19 +228,18 @@ public class CheckersGame
         }
     }
 
-    private int checkUR(int square)
-    {
+    private int checkUR(int square) {
         int location;
         int neighborSquare;
 
-        if (square < 1 || square > 32 ) {
+        if (square < 1 || square > 32) {
             return 0;
         }
 
         location = square % 8;
         neighborSquare = 0;
-        
-        switch(location) {
+
+        switch (location) {
             case 4:
                 return 0;
             case 1:
@@ -262,7 +253,7 @@ public class CheckersGame
             case 7:
                 neighborSquare = square - 4;
         }
-        
+
         if ((neighborSquare >= 1)) {
             return neighborSquare;
         } else {
@@ -270,19 +261,18 @@ public class CheckersGame
         }
     }
 
-    private int checkLL(int square)
-    {    
+    private int checkLL(int square) {
         int location;
         int neighborSquare;
 
-        if (square < 1 || square > 32 ) {
+        if (square < 1 || square > 32) {
             return 0;
         }
 
         location = square % 8;
         neighborSquare = 0;
-        
-        switch(location) {
+
+        switch (location) {
             case 5:
                 return 0;
             case 1:
@@ -296,7 +286,7 @@ public class CheckersGame
             case 0:
                 neighborSquare = square + 3;
         }
-        
+
         if ((neighborSquare <= 32)) {
             return neighborSquare;
         } else {
@@ -304,19 +294,18 @@ public class CheckersGame
         }
     }
 
-    private int checkLR(int square)
-    {
+    private int checkLR(int square) {
         int location;
         int neighborSquare;
 
-        if (square < 1 || square > 32 ) {
+        if (square < 1 || square > 32) {
             return 0;
         }
 
         location = square % 8;
         neighborSquare = 0;
-        
-        switch(location) {
+
+        switch (location) {
             case 4:
                 return 0;
             case 1:
@@ -330,7 +319,7 @@ public class CheckersGame
             case 0:
                 neighborSquare = square + 4;
         }
-        
+
         if ((neighborSquare <= 32)) {
             return neighborSquare;
         } else {
@@ -340,8 +329,7 @@ public class CheckersGame
 
     // Given a position, determines if there's a piece that can be picked up by the current turn
     // player to move at the current state and returns true if so
-    private boolean canPick(int square)
-    {
+    private boolean canPick(int square) {
         if (jumps) {
             if (canJump(square)) {
                 return true;
@@ -351,13 +339,12 @@ public class CheckersGame
                 return true;
             }
         }
-        
+
         return false;
     }
 
     // Picks up a piece from square "from". Returns true if successful, false if can't pick up.
-    public boolean pickUp(int from)
-    {
+    public boolean pickUp(int from) {
         if (canPick(from)) {
             toMove = from;
             return true;
@@ -367,8 +354,7 @@ public class CheckersGame
     }
 
     // Given two position integers, determines if a legal move can be made this turn between them.
-    public boolean isLegalMove(int from, int to)
-    {
+    public boolean isLegalMove(int from, int to) {
         int difference, jumped;
         boolean check = false;
         boolean jump = false;
@@ -433,12 +419,11 @@ public class CheckersGame
 
         return (!jump && check && !board.isEmpty(from) && board.isEmpty(to))
                 || (jump && check && !board.isEmpty(from) && board.isEmpty(to)
-                    && board.getPiece(jumped).getColor() != board.getPiece(from).getColor());
+                && board.getPiece(jumped).getColor() != board.getPiece(from).getColor());
     }
 
     // determines if a move is a jump (two squares away)
-    public boolean isJump(int to, int from)
-    {
+    public boolean isJump(int to, int from) {
         int difference = from - to;
         return (difference == 9) || (difference == 7) || (difference == -7) || (difference == -9);
     }
@@ -457,7 +442,7 @@ public class CheckersGame
                 board.getPiece(to).crown();
             }
             if (isJump(toMove, to)) {
-                board.removePiece(between(toMove,to));
+                board.removePiece(between(toMove, to));
                 logMove(toMove, to, true);
                 if (canJump(to)) {
                     toMove = to;
@@ -501,6 +486,7 @@ public class CheckersGame
         moveList.add(log);
     }
 
+
     /**
      * @return
      */
@@ -509,27 +495,24 @@ public class CheckersGame
     }
 
     /**
-     *
      * @param turn
      * @return
      */
     public boolean isPlayerTurn(Color turn) {
-        if (this.turn == turn) {
-            return true;
-        } else {
-            return false;
-        }
+
+        return (this.turn == turn);
     }
 
-    public void changeTurn(){
-        if(turn == Color.BLACK){
+    public void changeTurn() {
+        if (turn == Color.BLACK) {
             this.turn = Color.RED;
-        }else if(turn == Color.RED){
+        } else if (turn == Color.RED) {
             this.turn = Color.BLACK;
         }
     }
 
     // To get the current board
     public CurrentBoard getBoard() {
-    return board;}
+        return board;
+    }
 }
