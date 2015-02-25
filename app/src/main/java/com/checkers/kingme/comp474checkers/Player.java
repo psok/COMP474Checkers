@@ -67,35 +67,5 @@ public class Player {
         this.isWinner = isWinner;
     }
 
-    /**
-     *
-     * @param board
-     * @return
-     */
-    public boolean getIsWinnerResult(CurrentBoard board) {
-        this.isWinner = true;
-        int opponentPiece = 0;
-        int myPiece = 0;
-        Color opponentColor = Color.BLACK;
-        if (myPieceColor == Color.BLACK) {
-            opponentColor = Color.RED;
-        } else if (myPieceColor == Color.RED) {
-            opponentColor = Color.BLACK;
-        }
-        for (Piece piece : board.getBoard()) {
-            if (piece.getColor() == opponentColor) {
-                opponentPiece++;
-            } else if (piece.getColor() == myPieceColor) {
-                myPiece++;
-            }
-        }
 
-        if (opponentPiece == 0 && myPiece > 0) {
-            this.isWinner = true;
-        } else {
-            this.isWinner = false;
-        }
-
-        return isWinner;
-    }
 }
