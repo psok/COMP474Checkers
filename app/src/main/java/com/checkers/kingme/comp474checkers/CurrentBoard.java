@@ -15,11 +15,9 @@ public class CurrentBoard
 
     public Piece getPiece(int square)
     {
-        if (this.isEmpty(square)){
-            return null;
-        }else{
+
             return checkersBoard.get(square - 1);
-        }
+
     }
 
     public void movePiece(int from, int to)
