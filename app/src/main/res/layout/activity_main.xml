@@ -23,7 +23,7 @@
         android:layout_marginBottom="80dp"
         android:clickable="false"
         android:onClick="sendMessage"
-        android:visibility="invisible" />
+        android:visibility="visible" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -36,16 +36,40 @@
         android:layout_marginEnd="102dp"
         android:src="@drawable/kingme_logo" />
 
-    <ImageButton
-        android:layout_width="wrap_content"
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/multiplayerButton"
         android:layout_below="@+id/imgLogo"
-        android:layout_alignRight="@+id/startButton"
-        android:layout_alignEnd="@+id/startButton"
-        android:src="@drawable/multiplayer"
-        android:background="@android:color/transparent"
-        android:clickable="true"
-        android:onClick="startVisibility" />
+        android:orientation="vertical">
+        <RadioButton
+            android:id="@+id/humanVsHumanLocal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Human vs Human (Local)"
+            android:layout_below="@+id/imgLogo"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="41dp"
+            android:checked="true" />
+
+        <RadioButton
+            android:id="@+id/humanVsHumanRemote"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Human vs Human (Remote)"
+            android:layout_below="@+id/humanVsHumanLocal"
+            android:layout_alignParentRight="true"
+            android:enabled="false" />
+
+        <RadioButton
+            android:id="@+id/humanVsComputer"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Human vs Computer"
+            android:layout_below="@+id/humanVsHumanRemote"
+            android:layout_alignParentRight="true"
+            android:enabled="false" />
+    </RadioGroup>
 
 </RelativeLayout>
