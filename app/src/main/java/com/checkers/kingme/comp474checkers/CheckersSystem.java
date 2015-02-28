@@ -112,34 +112,33 @@ public class CheckersSystem extends ActionBarActivity
 
     @Override
     public void OnToggled(SquareView v, boolean touchOn) {
-        CurrentBoard currentBoard = stateOfGame.getBoard();
         int squareId = v.squareID;
-        Piece piece = currentBoard.getPiece(squareId);
-        isPieceSelected = !isPieceSelected;
-        if(isPieceSelected) {
-            if(piece == null) {
-                isPieceSelected = !isPieceSelected;
-            }
-            else {
+        if (squareId > 0) {
+            CurrentBoard currentBoard = stateOfGame.getBoard();
+            Piece piece = currentBoard.getPiece(squareId);
+            isPieceSelected = !isPieceSelected;
+            if (isPieceSelected) {
+                if (piece == null) {
+                    isPieceSelected = !isPieceSelected;
+                } else {
+                    setSquare(squareId);
+                }
+            } else {
                 setSquare(squareId);
             }
-        }
-        else {
-            setSquare(squareId);
-        }
 
-        if(fromSquare > 0 && toSquare > 0 && !isPieceSelected) {
-            if( stateOfGame.pickUp(this.fromSquare) && stateOfGame.moveTo(this.toSquare)) {
-                currentBoard = stateOfGame.getBoard();
-                updateSquareView(v, currentBoard, toSquare);
-                TextView txt = (TextView) findViewById(R.id.your_turn_text);
-                txt.setText("Your turn: " + stateOfGame.getTurn());
+            if (fromSquare > 0 && toSquare > 0 && !isPieceSelected) {
+                if (stateOfGame.pickUp(this.fromSquare) && stateOfGame.moveTo(this.toSquare)) {
+                    currentBoard = stateOfGame.getBoard();
+                    updateSquareView(v, currentBoard, toSquare);
+                    TextView txt = (TextView) findViewById(R.id.your_turn_text);
+                    txt.setText("Your turn: " + stateOfGame.getTurn());
+                }
+            } else {
+                previousIndex = v.index;
             }
+            updateBoard(currentBoard);
         }
-        else {
-            previousIndex = v.index;
-        }
-        updateBoard(currentBoard);
     }
 
     // Update isKing, isBlackPiece, isRedPiece of square view in accordance with currentBoard[squareId]
