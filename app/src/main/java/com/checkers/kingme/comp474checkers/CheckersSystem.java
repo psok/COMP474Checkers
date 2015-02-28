@@ -168,18 +168,14 @@ public class CheckersSystem extends ActionBarActivity
             for(int xPos=0; xPos<8; xPos++) {
                 if(yPos % 2 == 0) {
                     if(xPos % 2 == 1) {
-                        squareViews[index].isKing = currentBoard.isKing(squareID);;
-                        squareViews[index].isBlackPiece = currentBoard.isBlackPiece(squareID);
-                        squareViews[index].isRedPiece = currentBoard.isRedPiece(squareID);
+                        updateSquareView(squareViews[index], currentBoard, squareID);
                         squareViews[index].invalidate();
                         squareID ++;
                     }
                 }
                 else {
                     if(xPos % 2 == 0) {
-                        squareViews[index].isKing = currentBoard.isKing(squareID);;
-                        squareViews[index].isBlackPiece = currentBoard.isBlackPiece(squareID);
-                        squareViews[index].isRedPiece = currentBoard.isRedPiece(squareID);
+                        updateSquareView(squareViews[index], currentBoard, squareID);
                         squareViews[index].invalidate();
                         squareID ++;
                     }
