@@ -366,50 +366,54 @@ public class CheckersGame {
             return false;
         }
 
+        if (board.isEmpty(from)) {
+            return false;
+        }
+
         difference = to - from;
         jumped = 0;
 
         switch (difference) {
             // MOVE CASES
             case 4:
-                check = (checkLR(from) == to) || (checkLL(from) == to);
+                check = ((checkLR(from) == to) || (checkLL(from) == to)) && ((board.getPiece(from).getColor() == Color.BLACK) || (board.getPiece(from).getRank() == Rank.KING));
                 break;
             case 3:
-                check = (checkLL(from) == to);
+                check = (checkLL(from) == to) && ((board.getPiece(from).getColor() == Color.BLACK) || (board.getPiece(from).getRank() == Rank.KING));
                 break;
             case 5:
-                check = (checkLR(from) == to);
+                check = (checkLR(from) == to) && ((board.getPiece(from).getColor() == Color.BLACK) || (board.getPiece(from).getRank() == Rank.KING));
                 break;
 
             case -4:
-                check = (checkUR(from) == to) || (checkUL(from) == to);
+                check = ((checkUR(from) == to) || (checkUL(from) == to)) && ((board.getPiece(from).getColor() == Color.RED) || (board.getPiece(from).getRank() == Rank.KING));
                 break;
             case -5:
-                check = (checkUL(from) == to);
+                check = (checkUL(from) == to) && ((board.getPiece(from).getColor() == Color.RED) || (board.getPiece(from).getRank() == Rank.KING));
                 break;
             case -3:
-                check = (checkUR(from) == to);
+                check = (checkUR(from) == to) && ((board.getPiece(from).getColor() == Color.RED) || (board.getPiece(from).getRank() == Rank.KING));
                 break;
 
             // JUMP CASES
             case 9:
                 jumped = checkLR(from);
-                check = (checkLR(jumped) == to);
+                check = (checkLR(jumped) == to) && ((board.getPiece(from).getColor() == Color.BLACK) || (board.getPiece(from).getRank() == Rank.KING));
                 jump = true;
                 break;
             case 7:
                 jumped = checkLL(from);
-                check = (checkLL(jumped) == to);
+                check = (checkLL(jumped) == to) && ((board.getPiece(from).getColor() == Color.BLACK) || (board.getPiece(from).getRank() == Rank.KING));
                 jump = true;
                 break;
             case -7:
                 jumped = checkUR(from);
-                check = (checkUR(jumped) == to);
+                check = (checkUR(jumped) == to) && ((board.getPiece(from).getColor() == Color.RED) || (board.getPiece(from).getRank() == Rank.KING));
                 jump = true;
                 break;
             case -9:
                 jumped = checkUL(from);
-                check = (checkUL(jumped) == to);
+                check = (checkUL(jumped) == to) && ((board.getPiece(from).getColor() == Color.RED) || (board.getPiece(from).getRank() == Rank.KING));
                 jump = true;
                 break;
 
@@ -417,8 +421,8 @@ public class CheckersGame {
                 return false;
         }
 
-        return (!jump && check && !board.isEmpty(from) && board.isEmpty(to))
-                || (jump && check && !board.isEmpty(from) && board.isEmpty(to)
+        return (!jump && check && board.isEmpty(to))
+                || (jump && check && board.isEmpty(to)
                 && board.getPiece(jumped).getColor() != board.getPiece(from).getColor());
     }
 
