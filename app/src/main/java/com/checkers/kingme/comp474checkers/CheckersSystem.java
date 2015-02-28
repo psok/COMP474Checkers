@@ -111,9 +111,23 @@ public class CheckersSystem extends ActionBarActivity
     }
 
     @Override
-    public void OnToggled(SquareView v, boolean touchOn) { // Toasts on view (square) touch
-        setSquare(v.getSquareID());
+    public void OnToggled(SquareView v, boolean touchOn) {
         CurrentBoard currentBoard = stateOfGame.getBoard();
+        int squareId = v.squareID;
+        Piece piece = currentBoard.getPiece(squareId);
+        isPieceSelected = !isPieceSelected;
+        if(isPieceSelected) {
+            if(piece == null) {
+                isPieceSelected = !isPieceSelected;
+            }
+            else {
+                setSquare(squareId);
+            }
+        }
+        else {
+            setSquare(squareId);
+        }
+
         if(fromSquare > 0 && toSquare > 0 && !isPieceSelected) {
             if( stateOfGame.pickUp(this.fromSquare) && stateOfGame.moveTo(this.toSquare)) {
                 currentBoard = stateOfGame.getBoard();
@@ -130,9 +144,20 @@ public class CheckersSystem extends ActionBarActivity
 
     // Update isKing, isBlackPiece, isRedPiece of square view in accordance with currentBoard[squareId]
     private void updateSquareView (SquareView v, CurrentBoard currentBoard, int squareId) {
-        v.isKing = currentBoard.isKing(squareId);
+        /*v.isKing = currentBoard.isKing(squareId);
         v.isBlackPiece = currentBoard.isBlackPiece(squareId);
-        v.isRedPiece = currentBoard.isRedPiece(squareId);
+        v.isRedPiece = currentBoard.isRedPiece(squareId);*/
+        Piece piece = currentBoard.getPiece(squareId);
+        if(piece != null) {
+            v.isKing = (piece.getRank() == Rank.KING);
+            v.isBlackPiece = (piece.getColor() == Color.BLACK);
+            v.isRedPiece = (piece.getColor() == Color.RED);
+        }
+        else {
+            v.isKing = false;
+            v.isBlackPiece = false;
+            v.isRedPiece = false;
+        }
     }
 
     // Update only used squares on the board after any moves
@@ -175,7 +200,7 @@ public class CheckersSystem extends ActionBarActivity
     public void setSquare(int toSquare) {
         this.fromSquare = this.toSquare;
         this.toSquare = toSquare;
-        isPieceSelected = !isPieceSelected;
+        //isPieceSelected = !isPieceSelected;
     }
 
 }
