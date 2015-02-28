@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.GridLayout;
+import android.widget.TextView;
 
 public class CheckersSystem extends ActionBarActivity
         implements OnToggledListener{
@@ -117,6 +118,8 @@ public class CheckersSystem extends ActionBarActivity
             if( stateOfGame.pickUp(this.fromSquare) && stateOfGame.moveTo(this.toSquare)) {
                 currentBoard = stateOfGame.getBoard();
                 updateSquareView(v, currentBoard, toSquare);
+                TextView txt = (TextView) findViewById(R.id.your_turn_text);
+                txt.setText("Your turn: " + stateOfGame.getTurn());
             }
         }
         else {

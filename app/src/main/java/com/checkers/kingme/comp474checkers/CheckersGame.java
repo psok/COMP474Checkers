@@ -515,4 +515,7 @@ public class CheckersGame {
     public CurrentBoard getBoard() {
         return board;
     }
+    public Color getTurn() {
+        return turn;
+    }
 }

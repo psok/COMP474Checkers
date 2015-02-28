@@ -3,6 +3,7 @@
 
     <string name="app_name">COMP474Checkers</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_game">KingMe Checkers Game</string>
+    <string name="title_activity_game">Team King Me\'s Checkers</string>
+    <string name="your_turn_text">Your turn: Black</string>
 
 </resources>
