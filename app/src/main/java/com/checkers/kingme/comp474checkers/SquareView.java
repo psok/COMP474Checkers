@@ -8,17 +8,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-public class MyView extends View {
+public class SquareView extends View {
 
     public interface OnToggledListener { // interface between view and game
-        void OnToggled(MyView v, boolean touchOn);
+        void OnToggled(SquareView v, boolean touchOn);
     }
 
     boolean touchOn;
@@ -29,8 +27,10 @@ public class MyView extends View {
     int squareID = 0; //default
     boolean isBlackPiece;
     boolean isRedPiece;
+    boolean isKing;
+    int index;
 
-    public MyView(Context context, int x, int y, int squareId) {
+    public SquareView(Context context, int x, int y, int squareId) {
         super(context);
         idX = x;
         idY = y;
@@ -39,17 +39,17 @@ public class MyView extends View {
         init();
     }
 
-    public MyView(Context context) {
+    public SquareView(Context context) {
         super(context);
         init();
     }
 
-    public MyView(Context context, AttributeSet attrs) {
+    public SquareView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public MyView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SquareView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
@@ -58,8 +58,9 @@ public class MyView extends View {
         touchOn = false;
     }
 
+
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {//  specs imposed MyView by
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {//  specs imposed SquareView by
         setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
                 MeasureSpec.getSize(heightMeasureSpec));
     }
@@ -69,23 +70,34 @@ public class MyView extends View {
         if (getSquareID()>0) {
             canvas.drawColor(Color.DKGRAY);
 
-            // 02/23/2015 Jessie: place black or red pieces on the board when start the game
-            Bitmap blackPiece = BitmapFactory.decodeResource(getResources(), R.drawable.black_piece);
-            Bitmap redPiece = BitmapFactory.decodeResource(getResources(), R.drawable.red_piece);
-
-            blackPiece = Bitmap.createScaledBitmap(blackPiece, getWidth(), getHeight(), true);
-            redPiece = Bitmap.createScaledBitmap(redPiece, getWidth(), getHeight(), true);
-
             Rect srcRect = new Rect(0, 0, getWidth(), getHeight());
             Rect dstRect = new Rect(srcRect);
 
-            if(isBlackPiece) {
+            if(this.isBlackPiece) {
+                Bitmap blackPiece;
+                if(this.isKing) {
+                    blackPiece = BitmapFactory.decodeResource(getResources(), R.drawable.black_king);
+                }
+                else {
+                    blackPiece = BitmapFactory.decodeResource(getResources(), R.drawable.black_piece);
+                }
+                blackPiece = Bitmap.createScaledBitmap(blackPiece, getWidth(), getHeight(), true);
                 canvas.drawBitmap(blackPiece, srcRect, dstRect, null);
             }
-            else if(isRedPiece) {
+            else if(this.isRedPiece) {
+                Bitmap redPiece;
+                if(this.isKing) {
+                    redPiece = BitmapFactory.decodeResource(getResources(), R.drawable.red_king);
+                }
+                else {
+                    redPiece = BitmapFactory.decodeResource(getResources(), R.drawable.red_piece);
+                }
+                redPiece = Bitmap.createScaledBitmap(redPiece, getWidth(), getHeight(), true);
                 canvas.drawBitmap(redPiece, srcRect, dstRect, null);
             }
-            // Jessie ==END==
+            else {
+                canvas.drawColor(Color.DKGRAY);
+            }
 
         } else {
             canvas.drawColor(Color.WHITE);

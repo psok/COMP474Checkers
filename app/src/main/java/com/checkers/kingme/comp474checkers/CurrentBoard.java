@@ -50,4 +50,18 @@ public class CurrentBoard
 
         checkersBoard = Arrays.asList(parr);
     }
+
+    // Jessie: Check if the square has black or red piece, or black or red king or empty square
+    public boolean isBlackPiece(int square) {
+        return !this.isEmpty(square) && this.getPiece(square).getColor() == Color.BLACK;
+    }
+
+    public boolean isRedPiece(int square) {
+        return !this.isEmpty(square) && this.getPiece(square).getColor() == Color.RED;
+    }
+
+    public boolean isKing(int square) {
+        return !this.isEmpty(square) && this.getPiece(square).getRank() == Rank.KING;
+    }
+
 }

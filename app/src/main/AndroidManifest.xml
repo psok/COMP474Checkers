@@ -16,7 +16,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Game"
+            android:name=".CheckersSystem"
             android:label="@string/title_activity_game" >
         </activity>
     </application>

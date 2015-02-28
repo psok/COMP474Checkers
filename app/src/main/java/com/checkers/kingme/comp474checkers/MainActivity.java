@@ -16,7 +16,7 @@ public class MainActivity extends ActionBarActivity
 
         // Call game activity
         public void sendMessage(View view) {
-            Intent intent = new Intent(this, Game.class);
+            Intent intent = new Intent(this, CheckersSystem.class);
             startActivity(intent);
         }
         // Set the visibility of the start button
