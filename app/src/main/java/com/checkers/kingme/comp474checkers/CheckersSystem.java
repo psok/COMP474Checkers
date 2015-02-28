@@ -133,7 +133,7 @@ public class CheckersSystem extends ActionBarActivity
                     updateSquareView(v, currentBoard, toSquare);
                     TextView txt = (TextView) findViewById(R.id.your_turn_text);
                     if (stateOfGame.whoseTurn() == null) {
-                        txt.setText(txt.getText().subSequence(12, txt.getText().length()) + " WINS!");
+                        txt.setText(txt.getText().subSequence(11, txt.getText().length()) + " WINS!");
                     } else {
                         txt.setText("Your turn: " + stateOfGame.getTurn());
                     }
