@@ -15,13 +15,14 @@ import android.view.View;
 
 public class SquareView extends View {
 
-    public interface OnToggledListener { // interface between view and game
+    public interface OnTouchLister { // interface between view and game
         void OnToggled(SquareView v, boolean touchOn);
     }
 
     boolean touchOn;
+    boolean isHighlighted;
     boolean mDownTouch = false;
-    private OnToggledListener toggledListener;
+    private OnTouchLister touchLister;
     int idX = 0; //default
     int idY = 0; //default
     int squareID = 0; //default
@@ -67,40 +68,43 @@ public class SquareView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (getSquareID()>0) {
-            canvas.drawColor(Color.DKGRAY);
+        if(isHighlighted) {
+            canvas.drawColor(Color.YELLOW);
+            isHighlighted = !isHighlighted;
+        }
+        else {
 
-            Rect srcRect = new Rect(0, 0, getWidth(), getHeight());
-            Rect dstRect = new Rect(srcRect);
-
-            if(this.isBlackPiece) {
-                Bitmap blackPiece;
-                if(this.isKing) {
-                    blackPiece = BitmapFactory.decodeResource(getResources(), R.drawable.black_king);
-                }
-                else {
-                    blackPiece = BitmapFactory.decodeResource(getResources(), R.drawable.black_piece);
-                }
-                blackPiece = Bitmap.createScaledBitmap(blackPiece, getWidth(), getHeight(), true);
-                canvas.drawBitmap(blackPiece, srcRect, dstRect, null);
-            }
-            else if(this.isRedPiece) {
-                Bitmap redPiece;
-                if(this.isKing) {
-                    redPiece = BitmapFactory.decodeResource(getResources(), R.drawable.red_king);
-                }
-                else {
-                    redPiece = BitmapFactory.decodeResource(getResources(), R.drawable.red_piece);
-                }
-                redPiece = Bitmap.createScaledBitmap(redPiece, getWidth(), getHeight(), true);
-                canvas.drawBitmap(redPiece, srcRect, dstRect, null);
-            }
-            else {
+            if (getSquareID() > 0) {
                 canvas.drawColor(Color.DKGRAY);
-            }
 
-        } else {
-            canvas.drawColor(Color.WHITE);
+                Rect srcRect = new Rect(0, 0, getWidth(), getHeight());
+                Rect dstRect = new Rect(srcRect);
+
+                if (this.isBlackPiece) {
+                    Bitmap blackPiece;
+                    if (this.isKing) {
+                        blackPiece = BitmapFactory.decodeResource(getResources(), R.drawable.black_king);
+                    } else {
+                        blackPiece = BitmapFactory.decodeResource(getResources(), R.drawable.black_piece);
+                    }
+                    blackPiece = Bitmap.createScaledBitmap(blackPiece, getWidth(), getHeight(), true);
+                    canvas.drawBitmap(blackPiece, srcRect, dstRect, null);
+                } else if (this.isRedPiece) {
+                    Bitmap redPiece;
+                    if (this.isKing) {
+                        redPiece = BitmapFactory.decodeResource(getResources(), R.drawable.red_king);
+                    } else {
+                        redPiece = BitmapFactory.decodeResource(getResources(), R.drawable.red_piece);
+                    }
+                    redPiece = Bitmap.createScaledBitmap(redPiece, getWidth(), getHeight(), true);
+                    canvas.drawBitmap(redPiece, srcRect, dstRect, null);
+                } else {
+                    canvas.drawColor(Color.DKGRAY);
+                }
+
+            } else {
+                canvas.drawColor(Color.WHITE);
+            }
         }
     }
 
@@ -111,18 +115,19 @@ public class SquareView extends View {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
 
-                touchOn = !touchOn;
+                //touchOn = !touchOn;
                 invalidate(); // invalidates the view
 
-                if(toggledListener != null){
-                    toggledListener.OnToggled(this, touchOn);
+                if(touchLister != null){
+                    touchLister.OnToggled(this, touchOn);
                 }
 
                 mDownTouch = true;
                 return true;
 
+
             case MotionEvent.ACTION_UP:
-                if (mDownTouch) {
+               if (mDownTouch) {
                     mDownTouch = false;
                     performClick(); // returns true
                     return true;
@@ -137,9 +142,9 @@ public class SquareView extends View {
         return true;
     }
 
-    public void setOnToggledListener(OnToggledListener listener){ // setter
+    public void setOnToggledListener(OnTouchLister listener){ // setter
 
-        toggledListener = listener;
+        touchLister = listener;
     }
 
     public int getIdX(){ // getter

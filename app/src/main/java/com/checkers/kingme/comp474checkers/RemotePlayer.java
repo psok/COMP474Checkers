@@ -9,8 +9,11 @@ public class RemotePlayer extends Player{
         super(myPieceColor,name);
     }
 
-    boolean getNextMove(){
-        return true;
+    public void receiveMove(int squareID) {
+
     }
 
+    public void sendMove(int squareID) {
+
+    }
 }

@@ -3,10 +3,10 @@ package com.checkers.kingme.comp474checkers;
 /**
  * Created by Richa on 2/21/2015.
  */
-public class ComputerPlayer extends Player{
+public class LocalPlayer extends Player{
 
-    public ComputerPlayer(Color myPieceColor, String name){
-        super(myPieceColor,name);
+    public LocalPlayer(Color color, String name){
+        super(color, name);
     }
 
     public void receiveMove(int squareID) {
@@ -16,4 +16,5 @@ public class ComputerPlayer extends Player{
     public void sendMove(int squareID) {
 
     }
+
 }
