@@ -68,8 +68,31 @@ public class SquareView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        Rect srcRect = new Rect(0, 0, getWidth(), getHeight());
+        Rect dstRect = new Rect(srcRect);
+        Bitmap blackPiece;
+        Bitmap redPiece;
+
         if(isHighlighted) {
             canvas.drawColor(Color.YELLOW);
+
+            if (this.isBlackPiece) {
+                if (this.isKing) {
+                    blackPiece = BitmapFactory.decodeResource(getResources(), R.drawable.black_king);
+                } else {
+                    blackPiece = BitmapFactory.decodeResource(getResources(), R.drawable.black_piece);
+                }
+                blackPiece = Bitmap.createScaledBitmap(blackPiece, getWidth(), getHeight(), true);
+                canvas.drawBitmap(blackPiece, srcRect, dstRect, null);
+            } else if (this.isRedPiece) {
+                if (this.isKing) {
+                    redPiece = BitmapFactory.decodeResource(getResources(), R.drawable.red_king);
+                } else {
+                    redPiece = BitmapFactory.decodeResource(getResources(), R.drawable.red_piece);
+                }
+                redPiece = Bitmap.createScaledBitmap(redPiece, getWidth(), getHeight(), true);
+                canvas.drawBitmap(redPiece, srcRect, dstRect, null);
+            }
             isHighlighted = !isHighlighted;
         }
         else {
@@ -77,11 +100,7 @@ public class SquareView extends View {
             if (getSquareID() > 0) {
                 canvas.drawColor(Color.DKGRAY);
 
-                Rect srcRect = new Rect(0, 0, getWidth(), getHeight());
-                Rect dstRect = new Rect(srcRect);
-
                 if (this.isBlackPiece) {
-                    Bitmap blackPiece;
                     if (this.isKing) {
                         blackPiece = BitmapFactory.decodeResource(getResources(), R.drawable.black_king);
                     } else {
@@ -90,7 +109,6 @@ public class SquareView extends View {
                     blackPiece = Bitmap.createScaledBitmap(blackPiece, getWidth(), getHeight(), true);
                     canvas.drawBitmap(blackPiece, srcRect, dstRect, null);
                 } else if (this.isRedPiece) {
-                    Bitmap redPiece;
                     if (this.isKing) {
                         redPiece = BitmapFactory.decodeResource(getResources(), R.drawable.red_king);
                     } else {
