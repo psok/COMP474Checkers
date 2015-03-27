@@ -16,10 +16,11 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
             radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
 
-            /* Attach CheckedChangeListener to radio group */
+        // Attach CheckedChangeListener to radio group
             radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -30,6 +31,7 @@ public class MainActivity extends ActionBarActivity
 
                 }
             });
+
         }
 
         // Call game activity
