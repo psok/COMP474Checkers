@@ -1,22 +1,20 @@
 package com.checkers.kingme.comp474checkers;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import com.checkers.kingme.comp474checkers.SquareView.OnToggledListener;
 
-import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.GridLayout;
 import android.widget.TextView;
 
 public class CheckersSystem extends ActionBarActivity
-        implements OnToggledListener{
+        implements SquareView.OnTouchLister {
 
     private CheckersGame stateOfGame;
-    private int fromSquare = -1;
-    private int toSquare = -1;
+    private Player player1;
+    private Player player2;
     private int previousIndex = 0;
-    private boolean isPieceSelected = false;
+    private boolean previousCall;
     SquareView[] squareViews;
     GridLayout myGridLayout;
 
@@ -115,41 +113,33 @@ public class CheckersSystem extends ActionBarActivity
         int squareId = v.squareID;
         if (squareId > 0) {
             CurrentBoard currentBoard = stateOfGame.getBoard();
-            Piece piece = currentBoard.getPiece(squareId);
-            isPieceSelected = !isPieceSelected;
-            if (isPieceSelected) {
-                if (piece == null) {
-                    isPieceSelected = !isPieceSelected;
+            //Piece piece = currentBoard.getPiece(squareId);
+
+            if(stateOfGame.pickUp(squareId) &&
+                    ((v.isBlackPiece && stateOfGame.getTurn() == Color.BLACK) ||
+                    (v.isRedPiece && stateOfGame.getTurn() == Color.RED))) {
+                v.isHighlighted = !v.isHighlighted;
+                previousCall = stateOfGame.pickUp(squareId);
+            }
+            else if(previousCall && stateOfGame.moveTo(squareId)) {
+                currentBoard = stateOfGame.getBoard();
+                updateSquareView(v, currentBoard, squareId);
+                TextView txt = (TextView) findViewById(R.id.your_turn_text);
+                if (stateOfGame.whoseTurn() == null) {
+                    txt.setText(txt.getText().subSequence(11, txt.getText().length()) + " WINS!");
                 } else {
-                    setSquare(squareId);
+                    txt.setText("Your turn: " + stateOfGame.getTurn());
                 }
-            } else {
-                setSquare(squareId);
+
+                previousCall = false;
             }
 
-            if (fromSquare > 0 && toSquare > 0 && !isPieceSelected) {
-                if (stateOfGame.pickUp(this.fromSquare) && stateOfGame.moveTo(this.toSquare)) {
-                    currentBoard = stateOfGame.getBoard();
-                    updateSquareView(v, currentBoard, toSquare);
-                    TextView txt = (TextView) findViewById(R.id.your_turn_text);
-                    if (stateOfGame.whoseTurn() == null) {
-                        txt.setText(txt.getText().subSequence(11, txt.getText().length()) + " WINS!");
-                    } else {
-                        txt.setText("Your turn: " + stateOfGame.getTurn());
-                    }
-                }
-            } else {
-                previousIndex = v.index;
-            }
             updateBoard(currentBoard);
         }
     }
 
     // Update isKing, isBlackPiece, isRedPiece of square view in accordance with currentBoard[squareId]
     private void updateSquareView (SquareView v, CurrentBoard currentBoard, int squareId) {
-        /*v.isKing = currentBoard.isKing(squareId);
-        v.isBlackPiece = currentBoard.isBlackPiece(squareId);
-        v.isRedPiece = currentBoard.isRedPiece(squareId);*/
         Piece piece = currentBoard.getPiece(squareId);
         if(piece != null) {
             v.isKing = (piece.getRank() == Rank.KING);
@@ -186,7 +176,6 @@ public class CheckersSystem extends ActionBarActivity
                 index ++;
             }
         }
-
     }
 
     /**
@@ -196,10 +185,5 @@ public class CheckersSystem extends ActionBarActivity
         return stateOfGame.getBoard();
     }
 
-    public void setSquare(int toSquare) {
-        this.fromSquare = this.toSquare;
-        this.toSquare = toSquare;
-        //isPieceSelected = !isPieceSelected;
-    }
 
 }
