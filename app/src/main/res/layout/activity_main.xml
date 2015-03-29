@@ -7,69 +7,52 @@
     android:id="@+id/relativeHome"
     android:background="@drawable/home_footer">
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/startButton"
-        android:src="@drawable/start_button"
-        android:background="@android:color/transparent"
-        android:maxHeight="200dp"
-        android:maxWidth="200dp"
-        android:minHeight="50dp"
-        android:minWidth="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="80dp"
-        android:clickable="false"
-        android:onClick="sendMessage"
-        android:visibility="visible" />
-
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/imgLogo"
+        android:src="@drawable/kingme_logo"
         android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/startButton"
-        android:layout_alignEnd="@+id/startButton"
-        android:layout_marginRight="102dp"
-        android:layout_marginEnd="102dp"
-        android:src="@drawable/kingme_logo" />
+        android:layout_centerHorizontal="true" />
 
-    <RadioGroup
-        android:id="@+id/radioGroup"
-        android:layout_width="fill_parent"
+    <Button
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="Human vs Human"
+        android:id="@+id/btn_HumanLocal"
+        android:background="#ffff7345"
+        android:textColor="#ffffffff"
+        android:textSize="60px"
         android:layout_below="@+id/imgLogo"
-        android:orientation="vertical">
-        <RadioButton
-            android:id="@+id/humanVsHumanLocal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Human vs Human (Local)"
-            android:layout_below="@+id/imgLogo"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="41dp"
-            android:checked="true" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:onClick="sendMessage" />
 
-        <RadioButton
-            android:id="@+id/humanVsHumanRemote"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Human vs Human (Remote)"
-            android:layout_below="@+id/humanVsHumanLocal"
-            android:layout_alignParentRight="true"
-            android:enabled="false" />
+    <Button
+        style="@android:style/TextAppearance.Holo.Widget.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Human vs Human (Remote)"
+        android:id="@+id/btn_HumanRemote"
+        android:background="#ffff7345"
+        android:textColor="#ffffffff"
+        android:textSize="60px"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
-        <RadioButton
-            android:id="@+id/humanVsComputer"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Human vs Computer"
-            android:layout_below="@+id/humanVsHumanRemote"
-            android:layout_alignParentRight="true"
-            android:enabled="false" />
-    </RadioGroup>
+    <Button
+        style="@android:style/TextAppearance.Holo.Widget.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Human vs Computer"
+        android:id="@+id/button"
+       android:background="#ffff7345"
+        android:textColor="#ffffffff"
+        android:textSize="60px"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="78dp" />
 
 </RelativeLayout>

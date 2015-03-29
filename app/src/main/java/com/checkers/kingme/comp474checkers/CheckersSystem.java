@@ -1,4 +1,5 @@
 package com.checkers.kingme.comp474checkers;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 
@@ -21,7 +22,13 @@ public class CheckersSystem extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) { // creates multiple views of squares
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        String firstPlayer =  intent.getStringExtra(LocalMultiPlayer.EXTRA_PLAYER1);
+        String secondPlayer = intent.getStringExtra(LocalMultiPlayer.EXTRA_PLAYER2);
         setContentView(R.layout.activity_game);
+
+        TextView t = (TextView) findViewById(R.id.txt_PlayerNames);
+        t.setText("Player 1: " + firstPlayer + "  Player 2: " + secondPlayer);
 
         myGridLayout = (GridLayout)findViewById(R.id.checkersGrid); // creates legal checkerboard
         int tempCount = 0;
@@ -65,6 +72,7 @@ public class CheckersSystem extends ActionBarActivity
                 tView.setOnToggledListener(this);
                 squareViews[yPos * numOfCol + xPos] = tView;
                 myGridLayout.addView(tView);
+
             }
         }
 
@@ -185,5 +193,5 @@ public class CheckersSystem extends ActionBarActivity
         return stateOfGame.getBoard();
     }
 
-
 }
+
