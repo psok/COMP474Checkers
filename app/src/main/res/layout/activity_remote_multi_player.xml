@@ -7,32 +7,15 @@
     android:id="@+id/relativeHome"
     android:background="@drawable/home_footer">
 
-    <ImageButton
-        android:layout_width="250dp"
-        android:layout_height="70dp"
-        android:id="@+id/startButton"
-        android:src="@drawable/start_button"
-        android:background="@android:color/transparent"
-        android:maxHeight="200dp"
-        android:maxWidth="200dp"
-        android:minHeight="50dp"
-        android:minWidth="50dp"
-        android:clickable="false"
-        android:onClick="sendMessage"
-        android:visibility="visible"
-        android:layout_below="@+id/textView_SecondPlayerAddress"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="66dp" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/firstPlayer"
         android:id="@+id/textView_firstPlayer"
-        android:layout_marginTop="66dp"
+        android:layout_marginTop="74dp"
         android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/startButton"
-        android:layout_alignStart="@+id/startButton" />
+        android:layout_alignLeft="@+id/textView_SecondPlayerAddress"
+        android:layout_alignStart="@+id/textView_SecondPlayerAddress" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -42,22 +25,22 @@
         android:id="@+id/edittext_firstplayer"
         android:editable="true"
         android:background="#fff7fff7"
-        android:layout_above="@+id/textView_SecondPlayerAddress"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignBottom="@+id/textView_SecondPlayerAddress"
+        android:layout_toRightOf="@+id/textView_SecondPlayerAddress"
+        android:layout_toEndOf="@+id/textView_SecondPlayerAddress" />
 
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Player 2:"
+        android:text="@string/address"
         android:id="@+id/textView_SecondPlayerAddress"
+        android:layout_marginTop="46dp"
         android:layout_below="@+id/textView_firstPlayer"
-        android:layout_alignRight="@+id/textView_firstPlayer"
-        android:layout_alignEnd="@+id/textView_firstPlayer"
-        android:layout_marginTop="42dp"
-        android:layout_alignLeft="@+id/startButton"
-        android:layout_alignStart="@+id/startButton" />
+        android:layout_toLeftOf="@+id/editText_secondPlayer"
+        android:layout_toStartOf="@+id/editText_secondPlayer"
+        android:layout_marginRight="28dp"
+        android:layout_marginEnd="28dp" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -65,9 +48,21 @@
         android:inputType="textPersonName"
         android:ems="10"
         android:id="@+id/editText_secondPlayer"
-        android:layout_alignBottom="@+id/textView_SecondPlayerAddress"
-        android:layout_alignLeft="@+id/edittext_firstplayer"
-        android:layout_alignStart="@+id/edittext_firstplayer"
-        android:background="#ffffffff" />
+        android:background="#ffffffff"
+        android:layout_alignTop="@+id/textView_firstPlayer"
+        android:layout_alignRight="@+id/btn_findPlayer"
+        android:layout_alignEnd="@+id/btn_findPlayer" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/find"
+        android:id="@+id/btn_findPlayer"
+        android:background="#ff779fff"
+        android:textColor="#ffffffff"
+        android:textSize="40px"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

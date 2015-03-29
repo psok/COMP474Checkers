@@ -20,13 +20,15 @@
         android:layout_height="wrap_content"
         android:text="Human vs Human"
         android:id="@+id/btn_HumanLocal"
-        android:background="#ffff7345"
+        android:background="#ff87c0ff"
         android:textColor="#ffffffff"
         android:textSize="60px"
         android:layout_below="@+id/imgLogo"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:onClick="sendMessage" />
+        android:onClick="sendMessage"
+        android:elegantTextHeight="true"
+        android:layout_marginTop="30dp" />
 
     <Button
         style="@android:style/TextAppearance.Holo.Widget.Button"
@@ -34,25 +36,28 @@
         android:layout_height="wrap_content"
         android:text="Human vs Human (Remote)"
         android:id="@+id/btn_HumanRemote"
-        android:background="#ffff7345"
+        android:background="#ff60c3ff"
         android:textColor="#ffffffff"
         android:textSize="60px"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="160dp"
+        android:onClick="sendMessage" />
 
     <Button
         style="@android:style/TextAppearance.Holo.Widget.Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Human vs Computer"
-        android:id="@+id/button"
-       android:background="#ffff7345"
+        android:id="@+id/btn_HumanComputer"
+       android:background="#ff34a4ff"
         android:textColor="#ffffffff"
         android:textSize="60px"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="78dp" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="140dp"
+        android:onClick="sendMessage" />
 
 </RelativeLayout>

@@ -9,5 +9,8 @@
     <string name="title_activity_local_multi_player">LocalMultiPlayer</string>
     <string name="hello_world">Hello world!</string>
     <string name="playersName">Player1:          Player2:</string>
+    <string name="title_activity_remote_multi_player">RemoteMultiPlayer</string>
+    <string name="find">Find Opponent</string>
+    <string name="address">Player 2 IP:</string>
 
 </resources>
