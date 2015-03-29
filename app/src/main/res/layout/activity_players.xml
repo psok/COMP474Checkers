@@ -1,0 +1,73 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".CheckersActivity"
+    android:id="@+id/relativeHome"
+    android:background="@drawable/home_footer">
+
+    <ImageButton
+        android:layout_width="250dp"
+        android:layout_height="70dp"
+        android:id="@+id/startButton"
+        android:src="@drawable/start_button"
+        android:background="@android:color/transparent"
+        android:maxHeight="200dp"
+        android:maxWidth="200dp"
+        android:minHeight="50dp"
+        android:minWidth="50dp"
+        android:clickable="false"
+        android:onClick="sendMessage"
+        android:visibility="visible"
+        android:layout_below="@+id/textView_secondPlayer"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="66dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/firstPlayer"
+        android:id="@+id/textView_firstPlayer"
+        android:layout_marginTop="66dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/startButton"
+        android:layout_alignStart="@+id/startButton" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/edittext_firstplayer"
+        android:editable="true"
+        android:background="#fff7fff7"
+        android:layout_above="@+id/textView_secondPlayer"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Player 2:"
+        android:id="@+id/textView_secondPlayer"
+        android:layout_below="@+id/textView_firstPlayer"
+        android:layout_alignRight="@+id/textView_firstPlayer"
+        android:layout_alignEnd="@+id/textView_firstPlayer"
+        android:layout_marginTop="42dp"
+        android:layout_alignLeft="@+id/startButton"
+        android:layout_alignStart="@+id/startButton" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/editText_secondPlayer"
+        android:layout_alignBottom="@+id/textView_secondPlayer"
+        android:layout_alignLeft="@+id/edittext_firstplayer"
+        android:layout_alignStart="@+id/edittext_firstplayer"
+        android:background="#ffffffff" />
+
+</RelativeLayout>
