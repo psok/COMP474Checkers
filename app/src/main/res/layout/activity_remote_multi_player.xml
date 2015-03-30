@@ -7,6 +7,14 @@
     android:id="@+id/relativeHome"
     android:background="@drawable/home_footer">
 
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/imageViewBlack"
+        android:src="@drawable/black_piece"
+        android:scaleType="fitXY"
+        android:layout_alignBottom="@+id/textView_firstPlayer"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,6 +37,14 @@
         android:layout_toRightOf="@+id/textView_SecondPlayerAddress"
         android:layout_toEndOf="@+id/textView_SecondPlayerAddress" />
 
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/imageViewRed"
+        android:src="@drawable/red_piece"
+        android:scaleType="fitXY"
+        android:layout_alignBottom="@+id/textView_SecondPlayerAddress"/>
 
     <TextView
         android:layout_width="wrap_content"

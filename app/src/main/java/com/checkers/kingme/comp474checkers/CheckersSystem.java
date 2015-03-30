@@ -22,12 +22,21 @@ public class CheckersSystem extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState) { // creates multiple views of squares
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        String firstPlayer =  intent.getStringExtra(LocalMultiPlayer.EXTRA_PLAYER1);
-        String secondPlayer = intent.getStringExtra(LocalMultiPlayer.EXTRA_PLAYER2);
+        String firstPlayer =  intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER1);
+        String secondPlayer = intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER2);
         setContentView(R.layout.activity_game);
 
-        TextView t = (TextView) findViewById(R.id.txt_PlayerNames);
-        t.setText("Player 1: " + firstPlayer + "  Player 2: " + secondPlayer);
+        if(firstPlayer.isEmpty()) {
+            firstPlayer = "Player1";
+        }
+        if(secondPlayer.isEmpty()) {
+            secondPlayer = "Player2";
+        }
+
+        TextView t1 = (TextView) findViewById(R.id.txt_Player1);
+        t1.setText("  " + firstPlayer);
+        TextView t2 = (TextView) findViewById(R.id.txt_Player2);
+        t2.setText("  " + secondPlayer);
 
         myGridLayout = (GridLayout)findViewById(R.id.checkersGrid); // creates legal checkerboard
         int tempCount = 0;

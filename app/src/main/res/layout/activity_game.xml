@@ -35,11 +35,41 @@
             android:layout_weight="1"/>
     </LinearLayout>
 
-    <TextView
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/playersName"
-        android:id="@+id/txt_PlayerNames" />
+        android:orientation="horizontal"
+        android:id="@+id/layoutPlayer1"
+        android:gravity="left">
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/imageViewBlack"
+            android:src="@drawable/black_piece"
+            android:scaleType="fitXY"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Player1"
+            android:id="@+id/txt_Player1"
+            android:layout_alignParentTop="true"/>
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/imageViewRed"
+            android:src="@drawable/red_piece"
+            android:scaleType="fitXY"
+            android:layout_alignRight="@+id/imageViewBlack" />
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Player2"
+            android:id="@+id/txt_Player2" />
+
+    </LinearLayout>
 
 </LinearLayout>

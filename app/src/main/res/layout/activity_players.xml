@@ -24,6 +24,15 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="66dp" />
 
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/imageViewBlack"
+        android:src="@drawable/black_piece"
+        android:scaleType="fitXY"
+        android:layout_above="@+id/textView_SecondPlayerAddress"
+        android:layout_alignEnd="@+id/imageViewRed" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -40,12 +49,21 @@
         android:inputType="textPersonName"
         android:ems="10"
         android:id="@+id/edittext_firstplayer"
+        android:hint="Player1"
         android:editable="true"
         android:background="#fff7fff7"
         android:layout_above="@+id/textView_SecondPlayerAddress"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/imageViewRed"
+        android:src="@drawable/red_piece"
+        android:scaleType="fitXY"
+        android:layout_alignTop="@+id/editText_secondPlayer" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -65,6 +83,7 @@
         android:inputType="textPersonName"
         android:ems="10"
         android:id="@+id/editText_secondPlayer"
+        android:hint="Player2"
         android:layout_alignBottom="@+id/textView_SecondPlayerAddress"
         android:layout_alignLeft="@+id/edittext_firstplayer"
         android:layout_alignStart="@+id/edittext_firstplayer"

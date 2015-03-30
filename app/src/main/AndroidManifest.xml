@@ -25,11 +25,11 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".LocalMultiPlayer"
+            android:name=".LocalMultiPlayerActivity"
             android:label="@string/title_activity_local_multi_player" >
         </activity>
         <activity
-            android:name=".RemoteMultiPlayer"
+            android:name=".RemoteMultiPlayerActivity"
             android:label="@string/title_activity_remote_multi_player" >
         </activity>
     </application>

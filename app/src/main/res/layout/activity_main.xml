@@ -18,7 +18,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Human vs Human"
+        android:text="Local Players"
         android:id="@+id/btn_HumanLocal"
         android:background="#ff87c0ff"
         android:textColor="#ffffffff"
@@ -34,7 +34,7 @@
         style="@android:style/TextAppearance.Holo.Widget.Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Human vs Human (Remote)"
+        android:text="Remote Players"
         android:id="@+id/btn_HumanRemote"
         android:background="#ff60c3ff"
         android:textColor="#ffffffff"

@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 
 
-public class LocalMultiPlayer extends ActionBarActivity {
+public class LocalMultiPlayerActivity extends ActionBarActivity {
 
 
     private String player1="";
