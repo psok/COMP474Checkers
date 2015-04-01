@@ -18,4 +18,9 @@ public abstract class Player implements SquareView.OnTapListener
         this.name = name;
         this.state = state;
     }
+
+    public String getName()
+    {
+        return this.name;
+    }
 }
