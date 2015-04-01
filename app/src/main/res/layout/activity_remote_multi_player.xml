@@ -31,12 +31,11 @@
         android:inputType="textPersonName"
         android:ems="10"
         android:id="@+id/edittext_firstplayer"
-        android:editable="true"
+        android:editable="false"
         android:background="#fff7fff7"
         android:layout_alignBottom="@+id/textView_SecondPlayerAddress"
         android:layout_toRightOf="@+id/textView_SecondPlayerAddress"
         android:layout_toEndOf="@+id/textView_SecondPlayerAddress" />
-
 
     <ImageView
         android:layout_width="30dp"
@@ -67,7 +66,8 @@
         android:background="#ffffffff"
         android:layout_alignTop="@+id/textView_firstPlayer"
         android:layout_alignRight="@+id/btn_findPlayer"
-        android:layout_alignEnd="@+id/btn_findPlayer" />
+        android:layout_alignEnd="@+id/btn_findPlayer"
+        android:editable="false" />
 
     <Button
         android:layout_width="fill_parent"

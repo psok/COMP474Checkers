@@ -39,7 +39,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:id="@+id/layoutPlayer1"
         android:gravity="left">
         <ImageView
             android:layout_width="30dp"
@@ -70,6 +69,28 @@
             android:text="Player2"
             android:id="@+id/txt_Player2" />
 
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="left">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back to Menu"
+            android:id="@+id/btnMenu"
+            android:layout_gravity="left"
+            android:onClick="backToMenu" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Resign"
+            android:id="@+id/btnResign"
+            android:onClick="resign"
+            android:nestedScrollingEnabled="false" />
     </LinearLayout>
 
 </LinearLayout>

@@ -1,12 +1,16 @@
 package com.checkers.kingme.comp474checkers.frontend;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.GridLayout;
 import android.widget.TextView;
 
+import com.checkers.kingme.comp474checkers.MainActivity;
 import com.checkers.kingme.comp474checkers.backend.Color;
 import com.checkers.kingme.comp474checkers.model.CheckersStateMachine;
 import com.checkers.kingme.comp474checkers.LocalMultiPlayerActivity;
@@ -233,6 +237,30 @@ public class CheckersSystem extends ActionBarActivity
         wayBack.get(squareID).highlight();
         wayBack.get(squareID).invalidate();
         previouslyHighlighted = squareID;
+    }
+
+    public void resign(View view) {
+        new AlertDialog.Builder(this)
+            .setTitle("Resign")
+            .setMessage("Are you sure you want to resign the game?")
+            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+                }
+            })
+            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // do nothing
+                }
+            })
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .show();
+    }
+
+    public void backToMenu(View view) {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
     }
 
 }
