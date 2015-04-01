@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CheckersSystem"
+            android:name=".frontend.CheckersSystem"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_game"
             android:screenOrientation="portrait" >
