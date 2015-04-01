@@ -18,7 +18,6 @@ import com.checkers.kingme.comp474checkers.backend.Piece;
 import com.checkers.kingme.comp474checkers.player.LocalPlayer;
 import com.checkers.kingme.comp474checkers.player.Player;
 import com.checkers.kingme.comp474checkers.R;
-import com.checkers.kingme.comp474checkers.model.GameState;
 import com.checkers.kingme.comp474checkers.model.ViewUpdateListener;
 
 import java.util.HashMap;
@@ -103,9 +102,6 @@ public class CheckersSystem extends ActionBarActivity
                 }
 
                 SquareView tView = new SquareView(this, square, squareId);
-                //set index from 0 to 63 to each square
-                //tView.index = index++;
-                //tView.setOnTapListener(th
                 squareViews[yPos * numOfCol + xPos] = tView;
                 myGridLayout.addView(tView);
 
@@ -154,52 +150,6 @@ public class CheckersSystem extends ActionBarActivity
                         }
                     }});
     }
-
-    /*
-    @Override
-    public void OnToggled(SquareView v, boolean touchOn) {
-        int squareId = v.squareID;
-        if (squareId > 0) {
-            CurrentBoard currentBoard = stateOfGame.getBoard();
-            //Piece piece = currentBoard.getPiece(squareId);
-
-            if(stateOfGame.pickUp(squareId) &&
-                    ((v.isBlackPiece && stateOfGame.getTurn() == Color.BLACK) ||
-                    (v.isRedPiece && stateOfGame.getTurn() == Color.RED))) {
-                v.isHighlighted = !v.isHighlighted;
-                previousCall = stateOfGame.pickUp(squareId);
-            }
-            else if(previousCall && stateOfGame.moveTo(squareId)) {
-                currentBoard = stateOfGame.getBoard();
-                updateSquareView(v, currentBoard, squareId);
-                TextView txt = (TextView) findViewById(R.id.your_turn_text);
-                if (stateOfGame.whoseTurn() == null) {
-                    txt.setText(txt.getText().subSequence(11, txt.getText().length()) + " WINS!");
-                } else {
-                    txt.setText("Your turn: " + stateOfGame.getTurn());
-                }
-
-                previousCall = false;
-            }
-
-            updateBoard(currentBoard);
-        }
-    }
-    */
-
-    // Update isKing, isBlackPiece, isRedPiece of square view in accordance with currentBoard[squareId]
-    /*
-    private void updateSquareView (SquareView v, Piece[] board) {
-        int squareId = v.getSquareID();
-        if (squareId > 0 && board[squareId] != null) {
-
-            if (board[squareId].getColor() == Color.BLACK)
-            v.isKing = (piece.getRank() == Rank.KING);
-            v.isBlackPiece = (piece.getColor() == Color.BLACK);
-            v.isRedPiece = (piece.getColor() == Color.RED);
-        }
-    }
-    */
 
     // Update only used squares on the board after any moves
     public void invalidateView(Piece[] board)

@@ -497,23 +497,6 @@ public class CheckersGame {
         moveList.add(log);
     }
 
-
-    /**
-     * @return
-     */
-    public Color whoseTurn() {
-        return turn;
-    }
-
-    /**
-     * @param turn
-     * @return
-     */
-    public boolean isPlayerTurn(Color turn) {
-
-        return (this.turn == turn);
-    }
-
     private void changeTurn() {
         if (turn == Color.BLACK) {
             this.turn = Color.RED;
