@@ -1,4 +1,4 @@
-package com.checkers.kingme.comp474checkers;
+package com.checkers.kingme.comp474checkers.backend;
 
 
 public class Piece
@@ -16,12 +16,12 @@ public class Piece
         return rank;
     }
 
-    public void crown()
+    protected void crown()
     {
         rank = Rank.KING;
     }
 
-    public Piece(Color color)
+    protected Piece(Color color)
     {
         this.color = color;
         rank = Rank.CHECKER;

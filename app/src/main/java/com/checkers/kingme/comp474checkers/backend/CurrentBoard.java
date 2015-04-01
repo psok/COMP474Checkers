@@ -1,42 +1,42 @@
-package com.checkers.kingme.comp474checkers;
+package com.checkers.kingme.comp474checkers.backend;
 
 import java.util.List;
 import java.util.Arrays;
 
 
-public class CurrentBoard
+class CurrentBoard
 {
     private List<Piece> checkersBoard;
 
-    public boolean isEmpty(int square)
+    protected boolean isEmpty(int square)
     {
         return (checkersBoard.get(square - 1) == null);
     }
 
-    public Piece getPiece(int square)
+    protected Piece getPiece(int square)
     {
 
             return checkersBoard.get(square - 1);
 
     }
 
-    public void movePiece(int from, int to)
+    protected void movePiece(int from, int to)
     {
         checkersBoard.set(to - 1, getPiece(from));
         removePiece(from);
     }
 
-    public void removePiece(int place)
+    protected void removePiece(int place)
     {
         checkersBoard.set(place - 1, null);
     }
 
-    public Piece[] getBoard()
+    protected Piece[] getBoard()
     {
         return checkersBoard.toArray(new Piece[32]);
     }
 
-    public CurrentBoard()
+    protected CurrentBoard()
     {
         Piece[] parr = {
                 new Piece(Color.BLACK), new Piece(Color.BLACK), new Piece(Color.BLACK),
