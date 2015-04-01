@@ -1,4 +1,4 @@
-package com.checkers.kingme.comp474checkers;
+package com.checkers.kingme.comp474checkers.frontend;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -7,19 +7,33 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.GridLayout;
 import android.widget.TextView;
 
-public class CheckersSystem extends ActionBarActivity
-        implements SquareView.OnTouchLister {
+import com.checkers.kingme.comp474checkers.backend.Color;
+import com.checkers.kingme.comp474checkers.model.CheckersStateMachine;
+import com.checkers.kingme.comp474checkers.LocalMultiPlayerActivity;
+import com.checkers.kingme.comp474checkers.backend.Piece;
+import com.checkers.kingme.comp474checkers.player.LocalPlayer;
+import com.checkers.kingme.comp474checkers.player.Player;
+import com.checkers.kingme.comp474checkers.R;
+import com.checkers.kingme.comp474checkers.model.GameState;
+import com.checkers.kingme.comp474checkers.model.ViewUpdateListener;
 
-    private CheckersGame stateOfGame;
-    private Player player1;
-    private Player player2;
-    private int previousIndex = 0;
-    private boolean previousCall;
+import java.util.HashMap;
+import java.util.Map;
+
+public class CheckersSystem extends ActionBarActivity
+    implements ViewUpdateListener
+{
+    CheckersStateMachine stateMachine;
     SquareView[] squareViews;
     GridLayout myGridLayout;
 
+    Map<Integer, SquareView> wayBack;
+    Map<Color, Player> players;
+    private int previouslyHighlighted = 0;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) { // creates multiple views of squares
+    protected void onCreate(Bundle savedInstanceState)
+    { // creates multiple views of squares
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         String firstPlayer =  intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER1);
@@ -38,22 +52,36 @@ public class CheckersSystem extends ActionBarActivity
         TextView t2 = (TextView) findViewById(R.id.txt_Player2);
         t2.setText("  " + secondPlayer);
 
+        stateMachine = new CheckersStateMachine(this);
+
+        players = new HashMap<Color, Player>();
+
+        players.put(Color.BLACK, new LocalPlayer(Color.BLACK, firstPlayer, stateMachine));
+        players.put(Color.RED, new LocalPlayer(Color.RED, firstPlayer, stateMachine));
+
+        stateMachine.start();
+    }
+
+    public void initialize()
+    {
         myGridLayout = (GridLayout)findViewById(R.id.checkersGrid); // creates legal checkerboard
+
         int tempCount = 0;
         boolean everyTwo = false;
         boolean everyEight = true;
         int numOfCol = myGridLayout.getColumnCount();
         int numOfRow = myGridLayout.getRowCount();
         squareViews = new SquareView[numOfCol*numOfRow];
-        stateOfGame = new CheckersGame();
-        int index = 0;
+        wayBack = new HashMap<Integer, SquareView>();
         for(int yPos=0; yPos<numOfRow; yPos++){
-            for(int xPos=0; xPos<numOfCol; xPos++){
-                int squareId=-1;
-                if(everyEight) {
+            for(int xPos=0; xPos<numOfCol; xPos++) {
+                int squareId = -1;
+                Square square = new LightSquare();
+                if (everyEight) {
                     if (everyTwo && everyEight) {
                         tempCount++;
                         squareId = tempCount;
+                        square = new DarkSquare();
                         everyTwo = false;
                         if (tempCount % 4 == 0) {
                             everyTwo = true;
@@ -66,21 +94,20 @@ public class CheckersSystem extends ActionBarActivity
                     } else {
                         everyTwo = true;
                     }
-                }
-                else{
+                } else {
                     everyEight = true;
                 }
-                SquareView tView = new SquareView(this, xPos, yPos, squareId);
+
+                SquareView tView = new SquareView(this, square, squareId);
                 //set index from 0 to 63 to each square
-                tView.index = index++;
-                if (squareId > 0) {
-                    CurrentBoard currentBoard = stateOfGame.getBoard();
-                    updateSquareView(tView, currentBoard, squareId);
-                }
-                tView.setOnToggledListener(this);
+                //tView.index = index++;
+                //tView.setOnTapListener(th
                 squareViews[yPos * numOfCol + xPos] = tView;
                 myGridLayout.addView(tView);
 
+                if (squareId != -1) {
+                    wayBack.put(squareId, tView);
+                }
             }
         }
 
@@ -124,6 +151,7 @@ public class CheckersSystem extends ActionBarActivity
                     }});
     }
 
+    /*
     @Override
     public void OnToggled(SquareView v, boolean touchOn) {
         int squareId = v.squareID;
@@ -153,52 +181,58 @@ public class CheckersSystem extends ActionBarActivity
             updateBoard(currentBoard);
         }
     }
+    */
 
     // Update isKing, isBlackPiece, isRedPiece of square view in accordance with currentBoard[squareId]
-    private void updateSquareView (SquareView v, CurrentBoard currentBoard, int squareId) {
-        Piece piece = currentBoard.getPiece(squareId);
-        if(piece != null) {
+    /*
+    private void updateSquareView (SquareView v, Piece[] board) {
+        int squareId = v.getSquareID();
+        if (squareId > 0 && board[squareId] != null) {
+
+            if (board[squareId].getColor() == Color.BLACK)
             v.isKing = (piece.getRank() == Rank.KING);
             v.isBlackPiece = (piece.getColor() == Color.BLACK);
             v.isRedPiece = (piece.getColor() == Color.RED);
         }
-        else {
-            v.isKing = false;
-            v.isBlackPiece = false;
-            v.isRedPiece = false;
-        }
     }
+    */
 
     // Update only used squares on the board after any moves
-    private void updateBoard(CurrentBoard currentBoard) {
-        int index = 0;
-        int squareID = 1;
-        for(int yPos=0; yPos<8; yPos++){
-            for(int xPos=0; xPos<8; xPos++) {
-                if(yPos % 2 == 0) {
-                    if(xPos % 2 == 1) {
-                        updateSquareView(squareViews[index], currentBoard, squareID);
-                        squareViews[index].invalidate();
-                        squareID ++;
-                    }
-                }
-                else {
-                    if(xPos % 2 == 0) {
-                        updateSquareView(squareViews[index], currentBoard, squareID);
-                        squareViews[index].invalidate();
-                        squareID ++;
-                    }
-                }
-                index ++;
-            }
+    public void invalidateView(Piece[] board)
+    {
+        for (Map.Entry<Integer, SquareView> sqr : wayBack.entrySet()) {
+            sqr.getValue().updateSquare(board);
+            sqr.getValue().invalidate();
+        }
+        previouslyHighlighted = 0;
+    }
+
+    public void changeTurn(Color turn) {
+        TextView txt = (TextView) findViewById(R.id.your_turn_text);
+        txt.setText("Your turn: " + turn);
+        for (Map.Entry<Integer, SquareView> sqr : wayBack.entrySet()) {
+            sqr.getValue().setOnTapListener(players.get(turn));
         }
     }
 
-    /**
-     * @return  the current board
-     */
-    public CurrentBoard getTheBoard() {
-        return stateOfGame.getBoard();
+    public void win(Color turn) {
+        TextView txt = (TextView) findViewById(R.id.your_turn_text);
+        txt.setText(turn + " WINS!");
+        for (Map.Entry<Integer, SquareView> sqr : wayBack.entrySet()) {
+            sqr.getValue().setOnTapListener(null);
+        }
+    }
+
+    public void highlight(int squareID)
+    {
+        if (previouslyHighlighted != 0) {
+            wayBack.get(previouslyHighlighted).unHighlight();
+            wayBack.get(previouslyHighlighted).invalidate();
+        }
+
+        wayBack.get(squareID).highlight();
+        wayBack.get(squareID).invalidate();
+        previouslyHighlighted = squareID;
     }
 
 }

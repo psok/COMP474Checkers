@@ -1,4 +1,6 @@
-package com.checkers.kingme.comp474checkers;
+package com.checkers.kingme.comp474checkers.backend;
+
+import com.checkers.kingme.comp474checkers.model.GameListener;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -17,18 +19,20 @@ public class CheckersGame {
     private CurrentBoard board;
     private Color turn;
     private List<String> moveList;
-    //private Player winner;
-    //private CheckersSystem listener;
+    private GameListener listener;
 
     private int toMove; // this integer stores the position of the piece currently picked up
     private boolean jumps; // this flag is used to stop non-jump moves when jumps are possible
 
     // Constructor. Doesn't take any arguments (thus far). Does a fresh start.
-    public CheckersGame()//players? system?
+    public CheckersGame(GameListener listener)//players? system?
     {
         board = new CurrentBoard(); //
         turn = Color.BLACK;
         moveList = new ArrayList<String>();
+        this.listener = listener;
+        listener.onBegin(board.getBoard());
+        listener.onNewTurn(turn);
     }
 
     // Takes two positions diagonally two squares away in the board and returns the position of the
@@ -343,18 +347,8 @@ public class CheckersGame {
         return false;
     }
 
-    // Picks up a piece from square "from". Returns true if successful, false if can't pick up.
-    public boolean pickUp(int from) {
-        if (canPick(from)) {
-            toMove = from;
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     // Given two position integers, determines if a legal move can be made this turn between them.
-    public boolean isLegalMove(int from, int to) {
+    private boolean isLegalMove(int from, int to) {
         int difference, jumped;
         boolean check = false;
         boolean jump = false;
@@ -421,15 +415,26 @@ public class CheckersGame {
                 return false;
         }
 
-        return (!jump && check && board.isEmpty(to))
+        return (!jump && check && board.isEmpty(to) && !jumps)
                 || (jump && check && board.isEmpty(to)
                 && board.getPiece(jumped).getColor() != board.getPiece(from).getColor());
     }
 
     // determines if a move is a jump (two squares away)
-    public boolean isJump(int to, int from) {
+    private boolean isJump(int to, int from) {
         int difference = from - to;
         return (difference == 9) || (difference == 7) || (difference == -7) || (difference == -9);
+    }
+
+    // Picks up a piece from square "from". Returns true if successful, false if can't pick up.
+    public boolean pickUp(int from) {
+        if (canPick(from)) {
+            toMove = from;
+            listener.onPick(from);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // Once a piece has been picked up, this method moves it to the "to" place given. Returns true
@@ -447,13 +452,13 @@ public class CheckersGame {
             }
             if (isJump(toMove, to)) {
                 board.removePiece(between(toMove, to));
+                listener.onMove(board.getBoard());
                 logMove(toMove, to, true);
-                if (canJump(to)) {
-                    toMove = to;
-                } else {
+                if (!pickUp(to)) {
                     endTurn();
                 }
             } else {
+                listener.onMove(board.getBoard());
                 logMove(toMove, to, false);
                 endTurn();
             }
@@ -469,8 +474,10 @@ public class CheckersGame {
         changeTurn();
         findJumps();
         if (!jumps && !existMoves()) {
+            listener.onDefeat(turn);
             turn = null;
-
+        } else {
+            listener.onNewTurn(turn);
         }
     }
 
@@ -507,19 +514,11 @@ public class CheckersGame {
         return (this.turn == turn);
     }
 
-    public void changeTurn() {
+    private void changeTurn() {
         if (turn == Color.BLACK) {
             this.turn = Color.RED;
         } else if (turn == Color.RED) {
             this.turn = Color.BLACK;
         }
-    }
-
-    // To get the current board
-    public CurrentBoard getBoard() {
-        return board;
-    }
-    public Color getTurn() {
-        return turn;
     }
 }

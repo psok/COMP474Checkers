@@ -8,6 +8,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.checkers.kingme.comp474checkers.frontend.CheckersSystem;
+
 
 public class LocalMultiPlayerActivity extends ActionBarActivity {
 

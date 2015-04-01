@@ -1,45 +1,81 @@
-package com.checkers.kingme.comp474checkers;
+package com.checkers.kingme.comp474checkers.frontend;
 
 /**
  * Created by dalestoutjr on 2/20/15.
  */
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
+
+import com.checkers.kingme.comp474checkers.backend.Color;
+import com.checkers.kingme.comp474checkers.backend.Piece;
+import com.checkers.kingme.comp474checkers.backend.Rank;
 
 public class SquareView extends View {
 
-    public interface OnTouchLister { // interface between view and game
-        void OnToggled(SquareView v, boolean touchOn);
+    public interface OnTapListener { // interface between view and system
+        void onTap(int squareId);
     }
 
-    boolean touchOn;
-    boolean isHighlighted;
-    boolean mDownTouch = false;
-    private OnTouchLister touchLister;
-    int idX = 0; //default
-    int idY = 0; //default
-    int squareID = 0; //default
-    boolean isBlackPiece;
-    boolean isRedPiece;
-    boolean isKing;
-    int index;
+    //boolean isHighlighted;
+    private int squareID = 0; //default
+    //boolean isBlackPiece;
+    //boolean isRedPiece;
+    //boolean isKing;
+    //int index;
 
-    public SquareView(Context context, int x, int y, int squareId) {
+    private Square square;
+
+    public SquareView(Context context, Square sqr, int squareId)
+    {
         super(context);
-        idX = x;
-        idY = y;
+        this.square = sqr;
         squareID = squareId;
-
-        init();
     }
 
+    public void setOnTapListener (OnTapListener listener) {
+        final OnTapListener finalListener = listener;
+        this.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                finalListener.onTap(squareID);
+            }
+        });
+    }
+
+    public void updateSquare(Piece[] board)
+    {
+        if (squareID > 0) {
+            square = square.removeDecorations();
+
+            if (board[squareID - 1] != null) {
+                if (board[squareID - 1].getRank() == Rank.KING) {
+                    if (board[squareID - 1].getColor() == Color.BLACK) {
+                        this.square = new BlackKing(this.square);
+                    } else {
+                        this.square = new RedKing(this.square);
+                    }
+                } else {
+                    if (board[squareID - 1].getColor() == Color.BLACK) {
+                        this.square = new BlackPiece(this.square);
+                    } else {
+                        this.square = new RedPiece(this.square);
+                    }
+                }
+            }
+        }
+    }
+
+    public void highlight()
+    {
+        square = new Highlight(square);
+    }
+
+    public void unHighlight()
+    {
+        square = square.removeDecoration();
+    }
+
+    /*
     public SquareView(Context context) {
         super(context);
         init();
@@ -54,10 +90,7 @@ public class SquareView extends View {
         super(context, attrs, defStyleAttr);
         init();
     }
-
-    private void init() { //on creation defaults to false
-        touchOn = false;
-    }
+    */
 
 
     @Override
@@ -68,6 +101,8 @@ public class SquareView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        square.draw(getResources(), canvas, getWidth(), getHeight());
+        /*
         Rect srcRect = new Rect(0, 0, getWidth(), getHeight());
         Rect dstRect = new Rect(srcRect);
         Bitmap blackPiece;
@@ -123,9 +158,12 @@ public class SquareView extends View {
             } else {
                 canvas.drawColor(Color.WHITE);
             }
-        }
+        }*/
     }
 
+
+
+    /*
     @Override
     public boolean onTouchEvent(MotionEvent event) { //event definition; toggles view
         super.onTouchEvent(event);
@@ -163,18 +201,6 @@ public class SquareView extends View {
     public void setOnToggledListener(OnTouchLister listener){ // setter
 
         touchLister = listener;
-    }
-
-    public int getIdX(){ // getter
-        return idX;
-    }
-
-    public int getIdY(){ // getter
-        return idY;
-    }
-
-    public int getSquareID(){ // getter
-        return squareID;
-    }
+    }*/
 
 }
