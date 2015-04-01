@@ -189,6 +189,7 @@ public class CheckersSystem extends ActionBarActivity
         previouslyHighlighted = squareID;
     }
 
+    //resign button
     public void resign(View view) {
         new AlertDialog.Builder(this)
             .setTitle("Resign")
@@ -208,6 +209,7 @@ public class CheckersSystem extends ActionBarActivity
             .show();
     }
 
+    //backToMenu button
     public void backToMenu(View view) {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
