@@ -15,9 +15,7 @@ class CurrentBoard
 
     protected Piece getPiece(int square)
     {
-
-            return checkersBoard.get(square - 1);
-
+        return checkersBoard.get(square - 1);
     }
 
     protected void movePiece(int from, int to)

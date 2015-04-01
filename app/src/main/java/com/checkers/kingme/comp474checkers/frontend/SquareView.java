@@ -17,13 +17,7 @@ public class SquareView extends View {
         void onTap(int squareId);
     }
 
-    //boolean isHighlighted;
     private int squareID = 0; //default
-    //boolean isBlackPiece;
-    //boolean isRedPiece;
-    //boolean isKing;
-    //int index;
-
     private Square square;
 
     public SquareView(Context context, Square sqr, int squareId)
@@ -75,24 +69,6 @@ public class SquareView extends View {
         square = square.removeDecoration();
     }
 
-    /*
-    public SquareView(Context context) {
-        super(context);
-        init();
-    }
-
-    public SquareView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
-
-    public SquareView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
-    }
-    */
-
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {//  specs imposed SquareView by
         setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
@@ -102,105 +78,6 @@ public class SquareView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         square.draw(getResources(), canvas, getWidth(), getHeight());
-        /*
-        Rect srcRect = new Rect(0, 0, getWidth(), getHeight());
-        Rect dstRect = new Rect(srcRect);
-        Bitmap blackPiece;
-        Bitmap redPiece;
-
-        if(isHighlighted) {
-            canvas.drawColor(Color.YELLOW);
-
-            if (this.isBlackPiece) {
-                if (this.isKing) {
-                    blackPiece = BitmapFactory.decodeResource(getResources(), R.drawable.black_king);
-                } else {
-                    blackPiece = BitmapFactory.decodeResource(getResources(), R.drawable.black_piece);
-                }
-                blackPiece = Bitmap.createScaledBitmap(blackPiece, getWidth(), getHeight(), true);
-                canvas.drawBitmap(blackPiece, srcRect, dstRect, null);
-            } else if (this.isRedPiece) {
-                if (this.isKing) {
-                    redPiece = BitmapFactory.decodeResource(getResources(), R.drawable.red_king);
-                } else {
-                    redPiece = BitmapFactory.decodeResource(getResources(), R.drawable.red_piece);
-                }
-                redPiece = Bitmap.createScaledBitmap(redPiece, getWidth(), getHeight(), true);
-                canvas.drawBitmap(redPiece, srcRect, dstRect, null);
-            }
-            isHighlighted = !isHighlighted;
-        }
-        else {
-
-            if (getSquareID() > 0) {
-                canvas.drawColor(Color.DKGRAY);
-
-                if (this.isBlackPiece) {
-                    if (this.isKing) {
-                        blackPiece = BitmapFactory.decodeResource(getResources(), R.drawable.black_king);
-                    } else {
-                        blackPiece = BitmapFactory.decodeResource(getResources(), R.drawable.black_piece);
-                    }
-                    blackPiece = Bitmap.createScaledBitmap(blackPiece, getWidth(), getHeight(), true);
-                    canvas.drawBitmap(blackPiece, srcRect, dstRect, null);
-                } else if (this.isRedPiece) {
-                    if (this.isKing) {
-                        redPiece = BitmapFactory.decodeResource(getResources(), R.drawable.red_king);
-                    } else {
-                        redPiece = BitmapFactory.decodeResource(getResources(), R.drawable.red_piece);
-                    }
-                    redPiece = Bitmap.createScaledBitmap(redPiece, getWidth(), getHeight(), true);
-                    canvas.drawBitmap(redPiece, srcRect, dstRect, null);
-                } else {
-                    canvas.drawColor(Color.DKGRAY);
-                }
-
-            } else {
-                canvas.drawColor(Color.WHITE);
-            }
-        }*/
     }
-
-
-
-    /*
-    @Override
-    public boolean onTouchEvent(MotionEvent event) { //event definition; toggles view
-        super.onTouchEvent(event);
-
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-
-                //touchOn = !touchOn;
-                invalidate(); // invalidates the view
-
-                if(touchLister != null){
-                    touchLister.OnToggled(this, touchOn);
-                }
-
-                mDownTouch = true;
-                return true;
-
-
-            case MotionEvent.ACTION_UP:
-               if (mDownTouch) {
-                    mDownTouch = false;
-                    performClick(); // returns true
-                    return true;
-                }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean performClick() { // click on view
-        super.performClick();
-        return true;
-    }
-
-    public void setOnToggledListener(OnTouchLister listener){ // setter
-
-        touchLister = listener;
-    }*/
 
 }
