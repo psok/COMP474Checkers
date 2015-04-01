@@ -14,4 +14,7 @@ public abstract class Player {
 
     public abstract void receiveMove(int squareID);
     public abstract void sendMove(int squareID);
+    public String getName() {
+        return name;
+    }
 }
