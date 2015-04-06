@@ -31,11 +31,13 @@
         android:inputType="textPersonName"
         android:ems="10"
         android:id="@+id/edittext_firstplayer"
-        android:editable="false"
+        android:editable="true"
         android:background="#fff7fff7"
         android:layout_alignBottom="@+id/textView_SecondPlayerAddress"
         android:layout_toRightOf="@+id/textView_SecondPlayerAddress"
-        android:layout_toEndOf="@+id/textView_SecondPlayerAddress" />
+        android:layout_toEndOf="@+id/textView_SecondPlayerAddress"
+        android:enabled="true"
+        android:focusable="true" />
 
     <ImageView
         android:layout_width="30dp"
@@ -79,6 +81,7 @@
         android:textSize="40px"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
+        android:onClick="sendChallenge"
         android:layout_alignParentStart="true" />
 
 </RelativeLayout>
