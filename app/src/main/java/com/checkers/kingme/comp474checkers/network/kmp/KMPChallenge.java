@@ -56,6 +56,7 @@ public class KMPChallenge extends BaseKMPPacket
         return super.size() + this.playerName.length;
     }
 
+    // to get the player name as a string
     public String playerName()
     {
         return new String(playerName);
