@@ -7,10 +7,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.TextView;
 
 import com.checkers.kingme.comp474checkers.MainActivity;
+import com.checkers.kingme.comp474checkers.RemoteMultiPlayerActivity;
 import com.checkers.kingme.comp474checkers.backend.Color;
 import com.checkers.kingme.comp474checkers.model.CheckersStateMachine;
 import com.checkers.kingme.comp474checkers.LocalMultiPlayerActivity;
@@ -39,16 +41,24 @@ public class CheckersSystem extends ActionBarActivity
     { // creates multiple views of squares
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        String firstPlayer =  intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER1);
+        String firstPlayer = intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER1);
         String secondPlayer = intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER2);
         setContentView(R.layout.activity_game);
+        String mode = "";
 
-        if(firstPlayer.isEmpty()) {
+        if(firstPlayer == null && secondPlayer == null){
+            mode = "remote";
+        }else {
+            mode = "local";
+        }
+
+        if (firstPlayer == null || firstPlayer.isEmpty()) {
             firstPlayer = "Player1";
         }
-        if(secondPlayer.isEmpty()) {
+        if (secondPlayer == null || secondPlayer.isEmpty()) {
             secondPlayer = "Player2";
         }
+
 
         TextView t1 = (TextView) findViewById(R.id.txt_Player1);
         t1.setText("  " + firstPlayer);
@@ -60,7 +70,7 @@ public class CheckersSystem extends ActionBarActivity
         players = new HashMap<Color, Player>();
 
         players.put(Color.BLACK, new LocalPlayer(Color.BLACK, firstPlayer, stateMachine));
-        players.put(Color.RED, new LocalPlayer(Color.RED, firstPlayer, stateMachine));
+        players.put(Color.RED, new LocalPlayer(Color.RED, secondPlayer, stateMachine));
 
         stateMachine.start();
     }
@@ -192,7 +202,7 @@ public class CheckersSystem extends ActionBarActivity
     //resign button
     public void resign(View view) {
         new AlertDialog.Builder(this)
-            .setTitle("Resign")
+            .setTitle("Resign Request!")
             .setMessage("Are you sure you want to resign the game?")
             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {

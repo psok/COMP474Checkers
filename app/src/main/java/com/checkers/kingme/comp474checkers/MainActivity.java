@@ -5,6 +5,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.EditText;
 
 public class MainActivity extends ActionBarActivity
 {
@@ -26,6 +27,7 @@ public class MainActivity extends ActionBarActivity
             }else if(btnRemoteMultiPlayer.isPressed()){
                 Intent intent = new Intent(this, RemoteMultiPlayerActivity.class);
                 startActivity(intent);
+
             }
         }
 }

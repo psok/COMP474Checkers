@@ -36,7 +36,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/firstPlayer"
+        android:text="@string/firstPlayerName"
         android:id="@+id/textView_firstPlayer"
         android:layout_marginTop="66dp"
         android:layout_alignParentTop="true"
@@ -63,7 +63,7 @@
         android:id="@+id/imageViewRed"
         android:src="@drawable/red_piece"
         android:scaleType="fitXY"
-        android:layout_alignTop="@+id/editText_secondPlayer" />
+        android:layout_alignTop="@+id/editText_secondPlayerAddress" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -82,7 +82,7 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
-        android:id="@+id/editText_secondPlayer"
+        android:id="@+id/editText_secondPlayerAddress"
         android:hint="Player2"
         android:layout_alignBottom="@+id/textView_SecondPlayerAddress"
         android:layout_alignLeft="@+id/edittext_firstplayer"

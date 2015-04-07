@@ -5,7 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_game">Team King Me\'s Checkers</string>
     <string name="your_turn_text">Your turn: Black</string>
-    <string name="firstPlayer">Player 1:</string>
+    <string name="firstPlayerName">Your name:</string>
     <string name="title_activity_local_multi_player">LocalMultiPlayer</string>
     <string name="hello_world">Hello world!</string>
     <string name="playersName">Player1:          Player2:</string>

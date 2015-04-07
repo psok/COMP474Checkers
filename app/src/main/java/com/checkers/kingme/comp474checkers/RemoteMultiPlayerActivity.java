@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.checkers.kingme.comp474checkers.frontend.CheckersSystem;
 
@@ -33,7 +34,7 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
     private String message;
     private String destaddr;
 
-    final int PORT = 32767;
+    final int PORT = 8888;
     final int BUFSIZE = 512;
     final int TIMEOUT = 15000;
 
@@ -44,8 +45,8 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_remote_multi_player);
         message = "abc";
-        dest = (EditText)findViewById(R.id.edittext_firstplayer);
-        EditText muhip = (EditText) findViewById(R.id.editText_secondPlayer);
+        dest = (EditText)findViewById(R.id.editText_secondPlayerAddress);
+        TextView muhip = (TextView) findViewById(R.id.textView_firstPlayerAddress);
         WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
         DhcpInfo dhcp = wifi.getDhcpInfo();
 
@@ -121,6 +122,7 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
         Thread messengerThread = new Thread(netm);
         messengerThread.start();
     }
+
     private InetAddress intToInetAddr(int ip) throws UnknownHostException
     {
         byte[] octets = { (byte)(0xff & ip),
@@ -210,8 +212,8 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
 
     public void showDialogue(final String add){
         new AlertDialog.Builder(this)
-                .setTitle("You are Challenged")
-                .setMessage("Are you sure you want accept the challenge")
+                .setTitle("Challenge Request!")
+                .setMessage("Do you want to accept the challenge?")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         sendMessage("Accept", add);

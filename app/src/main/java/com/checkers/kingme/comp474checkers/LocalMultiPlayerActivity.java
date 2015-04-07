@@ -18,6 +18,7 @@ public class LocalMultiPlayerActivity extends ActionBarActivity {
     private String player2="";
     public final static String EXTRA_PLAYER1 = "player1Name";
     public final static String EXTRA_PLAYER2 = "player2Name";
+    public final static String EXTRA_MODE = "local";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +35,7 @@ public class LocalMultiPlayerActivity extends ActionBarActivity {
         setPlayer1(editTextFirstPlayer.getText().toString());
         intent.putExtra(EXTRA_PLAYER1, player1);
 
-        EditText editTextSecondPlayer= (EditText) findViewById(R.id.editText_secondPlayer);
+        EditText editTextSecondPlayer= (EditText) findViewById(R.id.editText_secondPlayerAddress);
         setPlayer2(editTextSecondPlayer.getText().toString());
         intent.putExtra(EXTRA_PLAYER2, player2);
 

@@ -7,6 +7,26 @@
     android:id="@+id/relativeHome"
     android:background="@drawable/home_footer">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your IP address is"
+        android:id="@+id/textView_IP"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView_firstPlayerAddress"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/textView_IP"
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/edittext_firstPlayerName"
+        android:layout_alignStart="@+id/edittext_firstPlayerName" />
+
     <ImageView
         android:layout_width="30dp"
         android:layout_height="30dp"
@@ -18,10 +38,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/firstPlayer"
+        android:text="@string/firstPlayerName"
         android:id="@+id/textView_firstPlayer"
         android:layout_marginTop="74dp"
         android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/imageViewBlack"
         android:layout_alignLeft="@+id/textView_SecondPlayerAddress"
         android:layout_alignStart="@+id/textView_SecondPlayerAddress" />
 
@@ -30,14 +51,13 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
-        android:id="@+id/edittext_firstplayer"
-        android:editable="true"
-        android:background="#fff7fff7"
-        android:layout_alignBottom="@+id/textView_SecondPlayerAddress"
+        android:id="@+id/edittext_firstPlayerName"
+        android:background="#ffffffff"
+        android:focusable="true"
         android:layout_toRightOf="@+id/textView_SecondPlayerAddress"
         android:layout_toEndOf="@+id/textView_SecondPlayerAddress"
-        android:enabled="true"
-        android:focusable="true" />
+        android:layout_alignBottom="@+id/imageViewBlack"
+        android:layout_alignTop="@+id/imageViewBlack" />
 
     <ImageView
         android:layout_width="30dp"
@@ -53,9 +73,9 @@
         android:text="@string/address"
         android:id="@+id/textView_SecondPlayerAddress"
         android:layout_marginTop="46dp"
-        android:layout_below="@+id/textView_firstPlayer"
-        android:layout_toLeftOf="@+id/editText_secondPlayer"
-        android:layout_toStartOf="@+id/editText_secondPlayer"
+        android:layout_below="@+id/edittext_firstPlayerName"
+        android:layout_toLeftOf="@+id/editText_secondPlayerAddress"
+        android:layout_toStartOf="@+id/editText_secondPlayerAddress"
         android:layout_marginRight="28dp"
         android:layout_marginEnd="28dp" />
 
@@ -64,12 +84,12 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
-        android:id="@+id/editText_secondPlayer"
+        android:id="@+id/editText_secondPlayerAddress"
         android:background="#ffffffff"
-        android:layout_alignTop="@+id/textView_firstPlayer"
         android:layout_alignRight="@+id/btn_findPlayer"
         android:layout_alignEnd="@+id/btn_findPlayer"
-        android:editable="false" />
+        android:layout_alignBottom="@+id/imageViewRed"
+        android:layout_alignTop="@+id/imageViewRed" />
 
     <Button
         android:layout_width="fill_parent"
