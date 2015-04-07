@@ -1,80 +1,66 @@
-
-
 package com.checkers.kingme.comp474checkers.network.kmp;
 
-import com.checkers.kingme.comp474checkers.player.Player;
-
 import java.io.*;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
 
 /**
  * Created by alshaymaaalhazzaa on 3/30/15.
  */
 
-public class KMPChallenge extends BaseKMPPacket {
-
+public class KMPChallenge extends BaseKMPPacket
+{
     public static final byte OPCODE = CHGop;
-    private Player player = null;
-    private DatagramSocket sock;
+    private byte[] playerName;
 
-    public KMPChallenge(int msgid, Player player, InetAddress localWiFiAddr) throws SocketException {
+    public KMPChallenge(int msgid, String playerName)
+    {
         super(OPCODE, msgid);
-        this.player = player;
-        this.sock = new DatagramSocket(DEFAULTPORT, localWiFiAddr);
+        this.playerName = playerName.substring(0, 20).getBytes();
     }
 
-    // check player accept request or not from incoming from the network (such as KMPResponse)
-    public boolean isPlayerAccepted(byte[] buffer) throws IOException {
+    // constructor to build a packet incoming from the network
+    public KMPChallenge(byte[] buffer) throws IOException
+    {
         byte bufopcode;
         short bufmsgid;
-        short bufaccept;
+        byte[] bufPName = new byte[20];
 
         ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
         DataInputStream dis = new DataInputStream(bais);
         bufopcode = dis.readByte();
         bufmsgid = dis.readShort();
-        bufaccept = dis.readShort();
-        if (bufopcode != RSPop) {
+        if (bufopcode != OPCODE) {
             throw new IOException("Wrong opcode!");
         }
+        if (dis.read(bufPName) == 0) {
+            throw new IOException("Player name empty!");
+        }
 
-        return (bufaccept == 1) ? true : false;
+        this.opcode = bufopcode;
+        this.msgid = bufmsgid;
+        this.playerName = bufPName;
     }
 
-    public byte[] write() throws IOException {
+    public byte[] write() throws IOException
+    {
         ByteArrayOutputStream baos = new ByteArrayOutputStream(size());
         DataOutputStream dos = new DataOutputStream(baos);
         dos.writeByte(this.opcode);
         dos.writeShort(this.msgid);
-
-        byte[] playerNameInBytes = this.player.getName().getBytes();
-        dos.write(playerNameInBytes);
+        dos.write(this.playerName);
 
         return baos.toByteArray();
     }
 
-    public String getIpAddress(){
-        DatagramPacket msgDG = new DatagramPacket(new byte[size()], size());
-        String addr;
-
-        while(true) { // read loop
-            try {
-                msgDG.setLength(size());
-                sock.receive(msgDG);
-            } catch (InterruptedIOException iioe) {
-                System.err.println("Response timed out!");
-                continue;
-            } catch (IOException ioe) {
-                System.err.println("Bad receive!");
-                continue;
-            }
-            addr = msgDG.getAddress().getHostAddress();
-            return addr;
-        }
+    public int size()
+    {
+        return super.size() + this.playerName.length;
     }
+
+    public String playerName()
+    {
+        return new String(playerName);
+    }
+
 }
 
 
