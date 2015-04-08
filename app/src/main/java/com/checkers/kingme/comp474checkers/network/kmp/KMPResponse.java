@@ -5,29 +5,35 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Created by Richa on 4/7/2015.
  */
 public class KMPResponse extends BaseKMPPacket {
 
-    public static final byte OPCODE = CHGop;
+    public static final byte OPCODE = RSPop;
     private byte[] playerName;
     private byte response;
 
-    public KMPResponse(int msgid, String playerName, int response) {
+    public KMPResponse(int msgid, String playerName, boolean response) {
         super(OPCODE, msgid);
-        this.playerName = playerName.substring(0, 20).getBytes();
-        // 1 - accept, 0- reject
-        this.response = (byte) response;
+        if(playerName.length() > 20) {
+            playerName = playerName.substring(0, 20);
+        }
+        this.playerName = playerName.getBytes();
+        // 1 = accept, 0 = reject
+        if(response) this.response = 1;
+        else this.response = 0;
     }
 
     // constructor to build a packet incoming from the network
     public KMPResponse(byte[] buffer) throws IOException {
         byte bufopcode;
         short bufmsgid;
-        byte[] bufPName = new byte[20];
+        byte[] bufPNameRsp = new byte[21];
         byte bufResponse;
+        int nobytes;
 
         ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
         DataInputStream dis = new DataInputStream(bais);
@@ -37,13 +43,16 @@ public class KMPResponse extends BaseKMPPacket {
         if (bufopcode != OPCODE) {
             throw new IOException("Wrong opcode!");
         }
-        if (dis.read(bufPName) == 0) {
+        nobytes = dis.read(bufPNameRsp);
+        if (nobytes == 0) {
+            throw new IOException("No response!");
+        } else if (nobytes == 1) {
             throw new IOException("Player name empty!");
         }
-        bufResponse = dis.readByte();
+        bufResponse = bufPNameRsp[bufPNameRsp.length - 1];
         this.opcode = bufopcode;
         this.msgid = bufmsgid;
-        this.playerName = bufPName;
+        this.playerName = Arrays.copyOf(bufPNameRsp, bufPNameRsp.length - 1);
         this.response = bufResponse;
     }
 
@@ -58,7 +67,7 @@ public class KMPResponse extends BaseKMPPacket {
         dos.writeByte(this.opcode);
         dos.writeShort(this.msgid);
         dos.write(this.playerName);
-        dos.write(this.response);
+        dos.writeByte(this.response);
         return baos.toByteArray();
     }
 
@@ -79,6 +88,6 @@ public class KMPResponse extends BaseKMPPacket {
      *
      * @return response
      */
-    public int getResponse(){return response;}
+    public boolean getResponse(){return this.response == 1;}
 
 }

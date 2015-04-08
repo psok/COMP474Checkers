@@ -18,7 +18,6 @@ public class LocalMultiPlayerActivity extends ActionBarActivity {
     private String player2="";
     public final static String EXTRA_PLAYER1 = "player1Name";
     public final static String EXTRA_PLAYER2 = "player2Name";
-    public final static String EXTRA_MODE = "local";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

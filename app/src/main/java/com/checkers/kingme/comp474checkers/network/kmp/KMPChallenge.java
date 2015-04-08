@@ -14,7 +14,10 @@ public class KMPChallenge extends BaseKMPPacket
     public KMPChallenge(int msgid, String playerName)
     {
         super(OPCODE, msgid);
-        this.playerName = playerName.substring(0, 20).getBytes();
+        if(playerName.length() > 20) {
+            playerName = playerName.substring(0, 20);
+        }
+        this.playerName = playerName.getBytes();
     }
 
     // constructor to build a packet incoming from the network
