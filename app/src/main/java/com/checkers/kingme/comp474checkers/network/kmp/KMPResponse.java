@@ -33,14 +33,14 @@ public class KMPResponse extends BaseKMPPacket {
         DataInputStream dis = new DataInputStream(bais);
         bufopcode = dis.readByte();
         bufmsgid = dis.readShort();
-        bufResponse = dis.readByte();
+
         if (bufopcode != OPCODE) {
             throw new IOException("Wrong opcode!");
         }
         if (dis.read(bufPName) == 0) {
             throw new IOException("Player name empty!");
         }
-
+        bufResponse = dis.readByte();
         this.opcode = bufopcode;
         this.msgid = bufmsgid;
         this.playerName = bufPName;
