@@ -14,7 +14,6 @@
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -31,6 +30,10 @@
         <activity
             android:name=".RemoteMultiPlayerActivity"
             android:label="@string/title_activity_remote_multi_player" >
+        </activity>
+        <activity
+            android:name=".ComputerPlayerActivity"
+            android:label="@string/title_activity_one_player" >
         </activity>
     </application>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
