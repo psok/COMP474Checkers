@@ -16,11 +16,12 @@
         android:layout_centerHorizontal="true" />
 
     <Button
+        style="@android:style/TextAppearance.Holo.Widget.Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Local Players"
-        android:id="@+id/btn_HumanLocal"
-        android:background="#ff87c0ff"
+        android:text="One Player"
+        android:id="@+id/btn_HumanComputer"
+        android:background="#ff34a4ff"
         android:textColor="#ffffffff"
         android:textSize="60px"
         android:layout_below="@+id/imgLogo"
@@ -31,12 +32,11 @@
         android:layout_marginTop="30dp" />
 
     <Button
-        style="@android:style/TextAppearance.Holo.Widget.Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Remote Players"
-        android:id="@+id/btn_HumanRemote"
-        android:background="#ff60c3ff"
+        android:text="Two Players"
+        android:id="@+id/btn_HumanLocal"
+        android:background="#ff87c0ff"
         android:textColor="#ffffffff"
         android:textSize="60px"
         android:layout_centerVertical="true"
@@ -49,9 +49,9 @@
         style="@android:style/TextAppearance.Holo.Widget.Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Human vs Computer"
-        android:id="@+id/btn_HumanComputer"
-        android:background="#ff34a4ff"
+        android:text="Network Play"
+        android:id="@+id/btn_HumanRemote"
+        android:background="#ff60c3ff"
         android:textColor="#ffffffff"
         android:textSize="60px"
         android:layout_alignParentBottom="true"
