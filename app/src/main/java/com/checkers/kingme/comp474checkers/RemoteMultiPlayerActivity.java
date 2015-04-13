@@ -34,6 +34,8 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
     private DatagramSocket sock;
     private String destaddr;
 
+    Thread messengerThread;
+
     final int PORT = BaseKMPPacket.DEFAULTPORT;
     final int BUFSIZE = 512;
 
@@ -41,6 +43,7 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
 
     private String playerName="";
     public final static String EXTRA_PLAYER1 = "playerName";
+    private AlertDialog chgDialogue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,21 +110,26 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
     }
 
     public void sendChallenge(View view){
+
+        sendChallengeDialogue();
+
         //message = msgtext.getText().toString();
         destaddr = dest.getText().toString();
 
         NetworkMessenger netm = new NetworkMessenger();
-        Thread messengerThread = new Thread(netm);
+        messengerThread = new Thread(netm);
         messengerThread.start();
     }
+
 
     public void sendMessage(String msg, String add){
         destaddr = add;
 
         NetworkMessenger netm = new NetworkMessenger();
-        Thread messengerThread = new Thread(netm);
+        messengerThread = new Thread(netm);
         messengerThread.start();
     }
+
 
     private InetAddress intToInetAddr(int ip) throws UnknownHostException
     {
@@ -163,7 +171,7 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
                         }else if (str.equalsIgnoreCase("Reject")){
 
                         }else {
-                            showDialogue(finalAddr);
+                            recieveChallengeDialogue(finalAddr);
                         }
                     }
                 });
@@ -177,16 +185,6 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
         {
             // TODO: cancel mechanism
             // TODO: show dialog saying "Sending challenge..."  with CANCEL button
-            /*runOnUiThread(() -> {
-                new AlertDialog.Builder(this)
-                        .setTitle("Sending challenge...")
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-            });*/
 
             InetAddress destination;
 
@@ -230,6 +228,11 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
 
 
             while(true) { // read loop
+                if (Thread.interrupted()) {
+                    return;
+                }
+
+
                 byte[] buffer;
                 KMPAcknowledgement ackPKT;
 
@@ -260,7 +263,7 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
                         throw new IOException();
                     }
 
-                    return;
+                    break;
                 } catch (IOException ioe) {
                     System.err.println("Bad receive!");
                     continue;
@@ -268,6 +271,12 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
             }
 
             // TODO: in the cancel dialog, change saying to "Awaiting response..."
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    chgDialogue.setTitle("Awaiting response...");
+                }
+            });
+
 
             // TODO: another while loop to receive and process the response
         }
@@ -279,9 +288,22 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
         return this;
     }
 
-    public void showDialogue(final String add){
+    public void sendChallengeDialogue(){
+        chgDialogue = new AlertDialog.Builder(this)
+                .setTitle("Sending the challenge...")
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        messengerThread.interrupt();
+                        messengerThread = null;
+                    }
+                })
+                .setIcon(android.R.drawable.ic_menu_info_details)
+                .show();
+    }
+
+    public void recieveChallengeDialogue(final String add){
         new AlertDialog.Builder(this)
-                .setTitle("Challenge Request!")
+                .setTitle("Challenge Received...")
                 .setMessage("Do you want to accept the challenge?")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
