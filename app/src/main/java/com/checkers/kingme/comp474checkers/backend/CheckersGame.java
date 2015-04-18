@@ -199,7 +199,7 @@ public class CheckersGame {
     /* The following methods implement the checkers board algebra. Given a square, they return the
      * number of the upper left (UL), upper right (UR), lower left (LL) or upper right (UR) neighbour
      */
-    private int checkUL(int square) {
+    public static int checkUL(int square) {
         int location;
         int neighborSquare;
 
@@ -232,7 +232,7 @@ public class CheckersGame {
         }
     }
 
-    private int checkUR(int square) {
+    public static int checkUR(int square) {
         int location;
         int neighborSquare;
 
@@ -265,7 +265,7 @@ public class CheckersGame {
         }
     }
 
-    private int checkLL(int square) {
+    public static int checkLL(int square) {
         int location;
         int neighborSquare;
 
@@ -298,7 +298,7 @@ public class CheckersGame {
         }
     }
 
-    private int checkLR(int square) {
+    public static int checkLR(int square) {
         int location;
         int neighborSquare;
 
@@ -333,7 +333,7 @@ public class CheckersGame {
 
     // Given a position, determines if there's a piece that can be picked up by the current turn
     // player to move at the current state and returns true if so
-    private boolean canPick(int square) {
+    protected boolean canPick(int square) {
         if (jumps) {
             if (canJump(square)) {
                 return true;
