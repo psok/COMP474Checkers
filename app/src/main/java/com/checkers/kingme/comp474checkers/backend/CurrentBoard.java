@@ -51,4 +51,32 @@ class CurrentBoard
         checkersBoard = Arrays.asList(parr);
     }
 
+    protected boolean isRedWinner() {
+        return blackPieces() == 0;
+    }
+
+    protected int blackPieces() {
+        int bPieces = 0;
+        for(int i=0; i<checkersBoard.size(); i++) {
+            if(checkersBoard.get(i).getColor() == Color.BLACK) {
+                bPieces ++;
+            }
+        }
+        return bPieces;
+    }
+
+    protected boolean isBlackWinner() {
+        return redPieces() == 0;
+    }
+
+    protected int redPieces() {
+        int rPieces = 0;
+        for(int i=0; i<checkersBoard.size(); i++) {
+            if(checkersBoard.get(i).getColor() == Color.RED) {
+                rPieces ++;
+            }
+        }
+        return rPieces;
+    }
+
 }
