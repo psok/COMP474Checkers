@@ -128,7 +128,7 @@ public class PriorityMove {
     private int calcPointsRedBeingAttacked(CurrentBoard board, Move move) {
 
         Piece piece = board.getPiece(move.to);
-        assert ( piece != null && piece.getColor() == Color.RED );
+        //assert ( piece != null && piece.getColor() == Color.RED );
         int points = 0;
 
         // get all the neighbours of the given square
@@ -152,7 +152,7 @@ public class PriorityMove {
         if (squareUL > 0 && board.getPiece(squareUL) != null && board.getPiece(squareUL).getColor() == Color.BLACK
                 && squareLR > 0 && board.getPiece(squareLR) == null) {
             // if the to-be-attacked piece is a king
-            if(piece.getRank() == Rank.KING) {
+            if(piece!=null && piece.getRank() == Rank.KING) {
                 points -= POINT_ATTACK_KING;
             } else {
                 points -= POINT_ATTACK_NORMAL;
@@ -192,7 +192,7 @@ public class PriorityMove {
     private int calcPointsRedDefending(CurrentBoard board, Move move) {
 
         Piece piece = board.getPiece(move.to);
-        assert ( piece!=null && piece.getColor() == Color.RED );
+        //assert ( piece!=null && piece.getColor() == Color.RED );
         int points = 0;
 
         int squareLL = CheckersGame.checkLL(move.to);
