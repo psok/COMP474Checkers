@@ -1,9 +1,13 @@
 package com.checkers.kingme.comp474checkers.backend;
 
+import android.util.Log;
+
+import com.checkers.kingme.comp474checkers.AI.DecisionTree;
 import com.checkers.kingme.comp474checkers.model.GameListener;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 
 /* CheckersGame Class
@@ -16,7 +20,7 @@ public class CheckersGame {
 
     }
 
-    private CurrentBoard board;
+    public CurrentBoard board;
     private Color turn;
     private List<String> moveList;
     private GameListener listener;
@@ -348,7 +352,7 @@ public class CheckersGame {
     }
 
     // Given two position integers, determines if a legal move can be made this turn between them.
-    private boolean isLegalMove(int from, int to) {
+   public boolean isLegalMove(int from, int to) {
         int difference, jumped;
         boolean check = false;
         boolean jump = false;
@@ -474,11 +478,19 @@ public class CheckersGame {
         changeTurn();
         findJumps();
         if (!jumps && !existMoves()) {
+            listener.onNewTurn(turn);
             listener.onDefeat(turn);
             turn = null;
         } else {
-            listener.onNewTurn(turn);
         }
+        if(turn == Color.RED){
+
+            Move move = getBestMove();
+            Log.i("from", "" + move.getFrom());
+            Log.i("to", ""+move.getTo());
+        }
+
+
     }
 
     /**
@@ -498,10 +510,135 @@ public class CheckersGame {
     }
 
     private void changeTurn() {
+
+
         if (turn == Color.BLACK) {
             this.turn = Color.RED;
         } else if (turn == Color.RED) {
             this.turn = Color.BLACK;
         }
     }
+
+    public Vector<Move> getAllLegalMoves() {
+        Move move;
+        Vector<Move> myMove = new Vector<Move>();
+        Piece[] pieces = board.getBoard();
+        int i = 1;
+        int to;
+        Vector<Move> opponentMove = new Vector<Move>();
+        for (Piece piece : board.getBoard()) {
+            Log.i("kkkk", "" + i+ piece);
+            if (piece != null && piece.getColor() == Color.RED) {
+
+                if(canJump(i)) {
+                    //Left move
+                    move = new Move();
+                    move.setFrom(i);
+                    to = CheckersGame.checkUL(i);
+                    if (pieces[to] == null) {
+                        Log.i("to here", to + " " + pieces[to] + "");
+                        move.setTo(to);
+                        move.setJump(false);
+                       if( isLegalMove(move.getFrom(),move.getTo())) {
+                            myMove.add(move);
+                        }
+                    } else if (pieces[to].getColor() == Color.BLACK && pieces[CheckersGame.checkUL(to)] == null) {
+                        move.setJump(true);
+                        move.setTo(CheckersGame.checkUL(to));
+                        if( isLegalMove(move.getFrom(),move.getTo())) {
+                            myMove.add(move);
+                        }
+                    } else if (pieces[to].getColor() == Color.RED) {
+                    }
+
+                    //right move
+                    move = new Move();
+                    move.setFrom(i);
+                    to = CheckersGame.checkUR(i);
+                    if (pieces[to] == null) {
+                        move.setTo(to);
+                        move.setJump(false);
+                        if( isLegalMove(move.getFrom(),move.getTo())) {
+                            myMove.add(move);
+                        }
+                    } else if (pieces[to].getColor() == Color.BLACK && pieces[CheckersGame.checkUR(to)] == null) {
+                        to = CheckersGame.checkUR(to);
+                        move.setTo(to);
+                        move.setJump(true);
+                        if( isLegalMove(move.getFrom(),move.getTo())) {
+                            myMove.add(move);
+                        }
+                    } else if (pieces[to].getColor() == Color.RED) {
+                    }
+                }
+
+            } else if (piece != null && piece.getColor() == Color.BLACK) {
+                move = new Move();
+                move.setFrom(i);
+                opponentMove.add(move);
+            }
+
+            if (piece != null && piece.getColor() == Color.RED && piece.getRank() == Rank.KING) {
+                if (canJump(i)) {
+                    move = new Move();
+                    //Left move
+                    move.setFrom(i);
+                    to = CheckersGame.checkLL(i);
+                    if (pieces[to] == null) {
+                        move.setTo(to);
+                        move.setJump(false);
+                        myMove.add(move);
+                    } else if (pieces[to].getColor() == Color.BLACK && pieces[CheckersGame.checkLL(to)] == null) {
+                        move.setJump(true);
+                        move.setTo(CheckersGame.checkLL(to));
+                        if( isLegalMove(move.getFrom(),move.getTo())) {
+                            myMove.add(move);
+                        }
+                    } else if (pieces[to].getColor() == Color.RED) {
+                    }
+
+                    //right move
+                    move = new Move();
+                    move.setFrom(i);
+                    to = CheckersGame.checkLR(i);
+                    if (pieces[to] == null) {
+                        move.setTo(to);
+                        move.setJump(false);
+                        myMove.add(move);
+                    } else if (pieces[to].getColor() == Color.BLACK && pieces[CheckersGame.checkLR(to)] == null) {
+                        to = CheckersGame.checkLR(to);
+                        move.setTo(to);
+                        move.setJump(true);
+                        if( isLegalMove(move.getFrom(),move.getTo())) {
+                            myMove.add(move);
+                        }
+                    } else if (pieces[to].getColor() == Color.RED) {
+                    }
+                }
+            }
+            i++;
+        }
+        return myMove;
+    }
+
+    public Move getBestMove() {
+
+        Vector<Move> myMove = getAllLegalMoves();
+
+
+        Move[] bestmoves = new Move[0];
+        DecisionTree maxPriorityAtTop = new DecisionTree(bestmoves, 2);
+        int priority;
+        for (Move m : myMove) {
+            //priority = PriorityMove.getPriority(m);
+            PriorityMove p =new PriorityMove();
+            priority = p.evaluateValueofBoardForRed(board,m);
+            m.setPriority(priority);
+            bestmoves = maxPriorityAtTop.insert(m);
+        }
+
+        return bestmoves[0];
+    }
+
+
 }
