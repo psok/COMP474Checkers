@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.checkers.kingme.comp474checkers.model.GameListener;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -483,18 +482,20 @@ public class CheckersGame {
             listener.onNewTurn(turn);
         }
 
-        if(turn == Color.RED){
-            Move move = getBestMove();
-            if(move != null) {
-                pickUp(move.from());
-                moveTo(move.to());
-                Log.i("PRIORITY SELECT from", "" + move.from());
-                Log.i("PRIORITY SELECT to", "" + move.to());
-                Log.i("PRIORITY SELECT priority", "" + move.getPriority());
-            } else {
-                Log.i("PRIORITY SELECT", "Null");
+/*        if(turn == Color.RED){
+            while(turn == Color.RED) {
+                Move move = getBestMove();
+                if (move != null) {
+                    pickUp(move.from());
+                    moveTo(move.to());
+                    Log.i("PRIORITY SELECT from", "" + move.from());
+                    Log.i("PRIORITY SELECT to", "" + move.to());
+                    Log.i("PRIORITY SELE priority", "" + move.getPriority());
+                } else {
+                    Log.i("PRIORITY SELECT", "Null");
+                }
             }
-        }
+        }*/
 
     }
 
@@ -634,7 +635,7 @@ public class CheckersGame {
             bestmoves = maxPriorityAtTop.insert(m);
             Log.i("AAA From: ", ""+m.from());
             Log.i("AAA To: ", ""+m.to());
-            Log.i("AAA IsJump: ", ""+m.isJump());
+            Log.i("AAA IsJump: ", "" + m.isJump());
             Log.i("AAA Priority: ", ""+m.getPriority());
         }
 
