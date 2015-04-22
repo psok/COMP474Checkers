@@ -1,4 +1,5 @@
 package com.checkers.kingme.comp474checkers.frontend;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.checkers.kingme.comp474checkers.ComputerPlayerActivity;
 import com.checkers.kingme.comp474checkers.MainActivity;
 import com.checkers.kingme.comp474checkers.RemoteMultiPlayerActivity;
+import com.checkers.kingme.comp474checkers.backend.CheckersGame;
 import com.checkers.kingme.comp474checkers.backend.Color;
 import com.checkers.kingme.comp474checkers.backend.GameMode;
 import com.checkers.kingme.comp474checkers.model.CheckersStateMachine;
@@ -38,6 +40,7 @@ public class CheckersSystem extends ActionBarActivity
     Map<Color, Player> players;
     private int previouslyHighlighted = 0;
     public GameMode gameMode;
+    public Color currentTurn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -178,6 +181,7 @@ public class CheckersSystem extends ActionBarActivity
     public void changeTurn(Color turn) {
         TextView txt = (TextView) findViewById(R.id.your_turn_text);
         txt.setText("Your turn: " + turn);
+        currentTurn = turn;
         for (Map.Entry<Integer, SquareView> sqr : wayBack.entrySet()) {
             sqr.getValue().setOnTapListener(players.get(turn));
         }
@@ -206,15 +210,17 @@ public class CheckersSystem extends ActionBarActivity
     //resign button
     public void resign(View view) {
         new AlertDialog.Builder(this)
-            .setTitle("Resign Request!")
-            .setMessage("Are you sure you want to resign the game?")
+            .setTitle("Resign Request")
+            .setMessage("Are you sure you want to resign from the game?")
             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
+                    if(currentTurn == Color.BLACK)
+                        win(Color.RED);
+                    else
+                        win(Color.BLACK);
                 }
             })
-            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     // do nothing
                 }
@@ -227,6 +233,27 @@ public class CheckersSystem extends ActionBarActivity
     public void backToMenu(View view) {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
+    }
+
+    //NewGame button
+    public void newGame(View view) {
+        new AlertDialog.Builder(this)
+                .setTitle("New Game Request")
+                .setMessage("Are you sure you want to end your current game and start a new game?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(getApplicationContext(), CheckersSystem.class);
+                        finish();
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
 }
