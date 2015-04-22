@@ -2,6 +2,7 @@ package com.checkers.kingme.comp474checkers.model;
 
 import com.checkers.kingme.comp474checkers.backend.CheckersGame;
 import com.checkers.kingme.comp474checkers.backend.Color;
+import com.checkers.kingme.comp474checkers.backend.GameMode;
 import com.checkers.kingme.comp474checkers.backend.Piece;
 import com.checkers.kingme.comp474checkers.player.Player;
 

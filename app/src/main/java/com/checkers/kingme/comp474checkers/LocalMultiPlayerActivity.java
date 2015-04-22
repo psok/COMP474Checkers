@@ -14,10 +14,10 @@ import com.checkers.kingme.comp474checkers.frontend.CheckersSystem;
 public class LocalMultiPlayerActivity extends ActionBarActivity {
 
 
-    private String player1="";
-    private String player2="";
-    public final static String EXTRA_PLAYER1 = "player1Name";
-    public final static String EXTRA_PLAYER2 = "player2Name";
+    private String player1="Player1";
+    private String player2="Player2";
+    public final static String EXTRA_PLAYER1 = "Player1";
+    public final static String EXTRA_PLAYER2 = "Player2";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,11 +31,13 @@ public class LocalMultiPlayerActivity extends ActionBarActivity {
 
         //Send  player's name to checkersSystem activity
         EditText editTextFirstPlayer = (EditText) findViewById(R.id.edittext_firstplayer);
-        setPlayer1(editTextFirstPlayer.getText().toString());
+        if(!editTextFirstPlayer.getText().toString().isEmpty())
+            setPlayer1(editTextFirstPlayer.getText().toString());
         intent.putExtra(EXTRA_PLAYER1, player1);
 
-        EditText editTextSecondPlayer= (EditText) findViewById(R.id.editText_secondPlayerAddress);
-        setPlayer2(editTextSecondPlayer.getText().toString());
+        EditText editTextSecondPlayer= (EditText) findViewById(R.id.editText_secondPlayer);
+        if(!editTextSecondPlayer.getText().toString().isEmpty())
+            setPlayer2(editTextSecondPlayer.getText().toString());
         intent.putExtra(EXTRA_PLAYER2, player2);
 
         startActivity(intent);

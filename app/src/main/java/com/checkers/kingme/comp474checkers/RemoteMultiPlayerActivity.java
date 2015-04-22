@@ -41,7 +41,7 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
 
     //InetAddress localWiFiAddr;
 
-    private String playerName="";
+    private String playerName="Player1";
     public final static String EXTRA_PLAYER1 = "playerName";
     private AlertDialog chgDialogue;
 

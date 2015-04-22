@@ -157,7 +157,6 @@ public class PriorityMove {
     private int calcPointsRedBeingAttacked(CurrentBoard board, Move move) {
 
         Piece piece = board.getPiece(move.to());
-        //assert ( piece != null && piece.getColor() == Color.RED );
         int points = 0;
 
         // get all the neighbours of the given square
@@ -167,8 +166,8 @@ public class PriorityMove {
         int squareUR = CheckersGame.checkUR(move.to());
 
         // if the upper right of the square is black and the lower left of the square is empty
-        if (squareUR > 0 && board.getPiece(squareUR) != null && board.getPiece(squareUR).getColor() == Color.BLACK
-                && squareLL > 0 && board.getPiece(squareLL) == null) {
+        if (squareUR > 0 && !board.isEmpty(squareUR) && board.getPiece(squareUR).getColor() == Color.BLACK
+                && squareLL > 0 && board.isEmpty(squareLL)) {
             // if the to-be-attacked piece is a king
             if (piece != null && piece.getRank() == Rank.KING) {
                 points -= POINT_ATTACK_KING;
@@ -178,8 +177,8 @@ public class PriorityMove {
         }
 
         // if the upper left of the square is black and the lower right of the square is empty
-        if (squareUL > 0 && board.getPiece(squareUL) != null && board.getPiece(squareUL).getColor() == Color.BLACK
-                && squareLR > 0 && board.getPiece(squareLR) == null) {
+        if (squareUL > 0 && !board.isEmpty(squareUL) && board.getPiece(squareUL).getColor() == Color.BLACK
+                && squareLR > 0 && board.isEmpty(squareLR)) {
             // if the to-be-attacked piece is a king
             if(piece!=null && piece.getRank() == Rank.KING) {
                 points -= POINT_ATTACK_KING;
@@ -189,8 +188,8 @@ public class PriorityMove {
         }
 
         // if the upper right of the square is empty but the lower left of the square is a black king (able to move backward)
-        if (squareUR > 0 && board.getPiece(squareUR) == null
-                && squareLL > 0 && board.getPiece(squareLL) != null && board.getPiece(squareLL).getColor() == Color.BLACK
+        if (squareUR > 0 && board.isEmpty(squareUR)
+                && squareLL > 0 && !board.isEmpty(squareLL) && board.getPiece(squareLL).getColor() == Color.BLACK
                 && board.getPiece(squareLL).getRank() == Rank.KING) {
             // if the to-be-attacked piece is a king
             if (piece.getRank() == Rank.KING) {
@@ -201,8 +200,8 @@ public class PriorityMove {
         }
 
         // if the upper left of the square is empty but the lower right of the square is a black king (able to move backward)
-        if (squareUL > 0 && board.getPiece(squareUL) != null && board.getPiece(squareUL).getColor() == null
-                && squareLR > 0 && board.getPiece(squareLR) != null && board.getPiece(squareLR).getColor() == Color.BLACK
+        if (squareUL > 0 && !board.isEmpty(squareUL) && board.getPiece(squareUL).getColor() == null
+                && squareLR > 0 && !board.isEmpty(squareLR) && board.getPiece(squareLR).getColor() == Color.BLACK
                 && board.getPiece(squareLR).getRank() == Rank.KING) {
             // if the to-be-attacked piece is a king
             if(piece.getRank() == Rank.KING) {
@@ -219,9 +218,6 @@ public class PriorityMove {
     To be called only by on a cell which has a red piece.
      */
     private int calcPointsRedDefending(CurrentBoard board, Move move) {
-
-        Piece piece = board.getPiece(move.to());
-        //assert ( piece!=null && piece.getColor() == Color.RED );
         int points = 0;
 
         int squareLL = CheckersGame.checkLL(move.to());
@@ -239,31 +235,34 @@ public class PriorityMove {
             points += POINT_DEFENCE;
         }
         // if the square is at the third two from the bottom
-        else if (squareLR > 0 && board.getPiece(squareLR) == null && neighbourLR >= 29 && board.getPiece(neighbourLR) !=null && board.getPiece(neighbourLR).getColor() == Color.RED) {
-            if (board.getPiece(squareUR) != null && board.getPiece(squareUR).getColor() == Color.BLACK) {
+        else if (squareLR > 0 && board.isEmpty(squareLR) && neighbourLR >= 29 && !board.isEmpty(neighbourLR) && board.getPiece(neighbourLR).getColor() == Color.RED) {
+            if (squareUR > 0 && !board.isEmpty(squareUR) && board.getPiece(squareUR).getColor() == Color.BLACK) {
                 if (board.getPiece(squareUR).getRank() == Rank.KING) {
                     points += POINT_DEFENCE_ATTACK_KING;
                 } else {
                     points += POINT_DEFENCE_ATTACK_NORMAL;
                 }
 
-            } else if (board.getPiece(squareUL) != null && board.getPiece(squareUL).getColor() == Color.BLACK && board.getPiece(squareLR) == null
-                    && ( board.getPiece(neighbourLR) == null || board.getPiece(neighbourLR) != null && board.getPiece(neighbourLR).getColor() == Color.BLACK)) {
+            } else if (squareUL > 0 && !board.isEmpty(squareUL) && board.getPiece(squareUL).getColor() == Color.BLACK
+                    && squareLR > 0 && board.isEmpty(squareLR)
+                    && ( neighbourLR > 0 && (board.isEmpty(neighbourLR) || board.getPiece(neighbourLR).getColor() == Color.BLACK))) {
                 points -= POINT_DEFENCE_ATTACK_NORMAL;
             } else {
                 points += POINT_DEFENCE;
             }
         }
         // if the piece is at the third two from the bottom
-        else if (squareLL > 0 && board.getPiece(squareLL) == null && neighbourLL >= 29 && board.getPiece(neighbourLL) != null && board.getPiece(neighbourLL).getColor() == Color.RED) {
-            if (board.getPiece(squareUL) != null && board.getPiece(squareUL).getColor() == Color.BLACK) {
+        else if (squareLL > 0 && board.isEmpty(squareLL)
+                && neighbourLL >= 29 && !board.isEmpty(neighbourLL) && board.getPiece(neighbourLL).getColor() == Color.RED) {
+            if (squareUL > 0 && !board.isEmpty(squareUL) && board.getPiece(squareUL).getColor() == Color.BLACK) {
                 if (board.getPiece(squareUL).getRank() == Rank.KING) {
                     points += POINT_DEFENCE_ATTACK_KING;
                 } else {
                     points += POINT_DEFENCE_ATTACK_NORMAL;
                 }
-            } else if (board.getPiece(squareUR) != null && board.getPiece(squareUR).getColor() == Color.BLACK && board.getPiece(squareLL) == null
-                    && ( board.getPiece(neighbourLL) == null || board.getPiece(neighbourLL).getColor() == Color.BLACK)) {
+            } else if (squareUR > 0 && !board.isEmpty(squareUR) && board.getPiece(squareUR).getColor() == Color.BLACK
+                    && (squareLL > 0 && board.isEmpty(squareLL))
+                    && (neighbourLL > 0 && (board.isEmpty(neighbourLL) || board.getPiece(neighbourLL).getColor() == Color.BLACK))) {
                 points -= POINT_DEFENCE_ATTACK_NORMAL;
             } else {
                 points += POINT_DEFENCE;
@@ -271,8 +270,8 @@ public class PriorityMove {
         } else {
             // if the piece is not at the most right column of the board
             if (move.to() % 8 < 4 ) {
-                if (board.getPiece(squareLR) != null && board.getPiece(squareLR).getColor() == Color.RED) {
-                    if (board.getPiece(squareUR) == null || board.getPiece(squareUR).getColor() == Color.RED) {
+                if (squareLR > 0 && !board.isEmpty(squareLR) && board.getPiece(squareLR).getColor() == Color.RED) {
+                    if (squareUR > 0 && (board.isEmpty(squareUR) || board.getPiece(squareUR).getColor() == Color.RED)) {
                         points += POINT_DEFENCE;
                     } else {
                         points += POINT_DEFENCE_ATTACK_NORMAL;
@@ -281,8 +280,8 @@ public class PriorityMove {
             }
             // if the piece is not at the most left column of the board
             if (move.to() % 8 > 5) {
-                if (board.getPiece(squareLL) != null && board.getPiece(squareLL).getColor() == Color.RED) {
-                    if (board.getPiece(squareUL) == null || board.getPiece(squareUL).getColor() == Color.RED)
+                if (squareLL > 0 && !board.isEmpty(squareLL) && board.getPiece(squareLL).getColor() == Color.RED) {
+                    if (squareUL > 0 && (board.isEmpty(squareUL) || board.getPiece(squareUL).getColor() == Color.RED))
                     points += POINT_DEFENCE;
                 } else {
                     points += POINT_DEFENCE_ATTACK_NORMAL;

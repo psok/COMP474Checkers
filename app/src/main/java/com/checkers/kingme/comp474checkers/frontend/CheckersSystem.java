@@ -11,9 +11,11 @@ import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.TextView;
 
+import com.checkers.kingme.comp474checkers.ComputerPlayerActivity;
 import com.checkers.kingme.comp474checkers.MainActivity;
 import com.checkers.kingme.comp474checkers.RemoteMultiPlayerActivity;
 import com.checkers.kingme.comp474checkers.backend.Color;
+import com.checkers.kingme.comp474checkers.backend.GameMode;
 import com.checkers.kingme.comp474checkers.model.CheckersStateMachine;
 import com.checkers.kingme.comp474checkers.LocalMultiPlayerActivity;
 import com.checkers.kingme.comp474checkers.backend.Piece;
@@ -35,30 +37,32 @@ public class CheckersSystem extends ActionBarActivity
     Map<Integer, SquareView> wayBack;
     Map<Color, Player> players;
     private int previouslyHighlighted = 0;
+    public GameMode gameMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     { // creates multiple views of squares
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        String firstPlayer = intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER1);
-        String secondPlayer = intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER2);
+        String firstPlayer = "";
+        String secondPlayer = "";
         setContentView(R.layout.activity_game);
-        String mode = "";
 
-        if(firstPlayer == null && secondPlayer == null){
-            mode = "remote";
-        }else {
-            mode = "local";
+        if(intent.getStringExtra(ComputerPlayerActivity.EXTRA_PLAYER1) != null
+                && intent.getStringExtra(ComputerPlayerActivity.EXTRA_PLAYER2) != null) {
+            firstPlayer = intent.getStringExtra(ComputerPlayerActivity.EXTRA_PLAYER1);
+            secondPlayer = intent.getStringExtra(ComputerPlayerActivity.EXTRA_PLAYER2);
+            gameMode = GameMode.ONE_PLAYER;
         }
-
-        if (firstPlayer == null || firstPlayer.isEmpty()) {
-            firstPlayer = "Player1";
+        else if(intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER1) != null
+                && intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER2) != null) {
+            firstPlayer = intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER1);
+            secondPlayer = intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER2);
+            gameMode = GameMode.TWO_PLAYER;
         }
-        if (secondPlayer == null || secondPlayer.isEmpty()) {
-            secondPlayer = "Player2";
+        else  {
+            gameMode = GameMode.NETWORK_PLAY;
         }
-
 
         TextView t1 = (TextView) findViewById(R.id.txt_Player1);
         t1.setText("  " + firstPlayer);

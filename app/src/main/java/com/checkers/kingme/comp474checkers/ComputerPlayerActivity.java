@@ -14,8 +14,9 @@ import com.checkers.kingme.comp474checkers.frontend.CheckersSystem;
 public class ComputerPlayerActivity extends ActionBarActivity {
 
 
-    private String player1="";
-    public final static String EXTRA_PLAYER1 = "player1Name";
+    private String player1="Player1";
+    public final static String EXTRA_PLAYER1 = "Player1";
+    public final static String EXTRA_PLAYER2 = "Computer";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +30,10 @@ public class ComputerPlayerActivity extends ActionBarActivity {
 
         //Send  player's name to checkersSystem activity
         EditText editTextFirstPlayer = (EditText) findViewById(R.id.edittext_onePlayerHuman);
-        setPlayer1(editTextFirstPlayer.getText().toString());
+        if(!editTextFirstPlayer.getText().toString().isEmpty())
+            setPlayer1(editTextFirstPlayer.getText().toString());
         intent.putExtra(EXTRA_PLAYER1, player1);
+        intent.putExtra(EXTRA_PLAYER2, "Computer");
 
         startActivity(intent);
     }

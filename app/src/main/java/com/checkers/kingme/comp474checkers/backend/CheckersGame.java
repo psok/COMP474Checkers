@@ -482,7 +482,7 @@ public class CheckersGame {
             listener.onNewTurn(turn);
         }
 
-/*        if(turn == Color.RED){
+        /*if(turn == Color.RED){
             while(turn == Color.RED) {
                 Move move = getBestMove();
                 if (move != null) {
@@ -490,7 +490,7 @@ public class CheckersGame {
                     moveTo(move.to());
                     Log.i("PRIORITY SELECT from", "" + move.from());
                     Log.i("PRIORITY SELECT to", "" + move.to());
-                    Log.i("PRIORITY SELE priority", "" + move.getPriority());
+                    Log.i("PRIORITY SELECT priority", "" + move.getPriority());
                 } else {
                     Log.i("PRIORITY SELECT", "Null");
                 }
@@ -633,10 +633,10 @@ public class CheckersGame {
             priority = p.evaluateValueofBoard(board, m);
             m.setPriority(priority);
             bestmoves = maxPriorityAtTop.insert(m);
-            Log.i("AAA From: ", ""+m.from());
-            Log.i("AAA To: ", ""+m.to());
-            Log.i("AAA IsJump: ", "" + m.isJump());
-            Log.i("AAA Priority: ", ""+m.getPriority());
+            Log.i("AIAI From: ", ""+m.from());
+            Log.i("AIAI To: ", ""+m.to());
+            Log.i("AIAI IsJump: ", "" + m.isJump());
+            Log.i("AIAI Priority: ", ""+m.getPriority());
         }
 
         if(bestmoves.length > 0)
