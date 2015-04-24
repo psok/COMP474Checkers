@@ -13,34 +13,33 @@ public class PriorityMove {
     public final int POINT_DEFENCE = 30;
     public final int POINT_DEFENCE_ATTACK_NORMAL = 20;
     public final int POINT_DEFENCE_ATTACK_KING = 40;
-    public final int POINT_ATTACK_NORMAL = 50;
-    public final int POINT_ATTACK_KING = 60;
+    public final int POINT_ATTACK_NORMAL = 400;
+    public final int POINT_ATTACK_KING = 600;
 
     public int evaluateValueofBoard(CurrentBoard board, Move move) {
-        int points = 0;
-        points += calcPointsForKing(board, move);
-        points += calcPointsForJump(move);
+        int points = POINT_NORMAL;
+        points += calcPointsForKing(board,move);
+        points += calcPointsForJump(board, move);
         points += calcPointsRedBeingAttacked(board, move);
         points += calcPointsRedDefending(board, move);
 
         return points;
     }
 
-    private int calcPointsForKing(CurrentBoard board, Move move) {
+    private int calcPointsForKing(CurrentBoard board,Move move) {
         int points = 0;
-        if(!board.isEmpty(move.from())
-                && board.getPiece(move.from()).getRank() != Rank.KING
-                && move.to() <= 4) {
+        if(move.to() <= 4 && board.getPiece(move.from()).getRank() != Rank.KING) {
             points += POINT_KING;
         }
         return points;
     }
 
-    private int calcPointsForJump(Move move) {
+    private int calcPointsForJump(CurrentBoard board, Move move) {
         int points = 0;
         if(move.isJump()) {
             points += POINT_JUMP;
         }
+
 
         return points;
     }
@@ -59,11 +58,11 @@ public class PriorityMove {
         return rValue;
     }*/
 
-    /*private boolean isRedWinner(CurrentBoard board) {
+    private boolean isRedWinner(CurrentBoard board) {
         return blackPieces(board) == 0;
-    }*/
+    }
 
-    /*private int blackPieces(CurrentBoard board) {
+    private int blackPieces(CurrentBoard board) {
         int bPieces = 0;
         for(int i=1; i<=32; i++) {
             if(board.getPiece(i) != null && board.getPiece(i).getColor() == Color.BLACK) {
@@ -72,7 +71,6 @@ public class PriorityMove {
         }
         return bPieces;
     }
-    */
 
     // cover capture normal piece and king
     /*private int RedBlackPiecesDifferencePoints(CurrentBoard board) {
@@ -183,7 +181,7 @@ public class PriorityMove {
         if (squareUL > 0 && !board.isEmpty(squareUL) && board.getPiece(squareUL).getColor() == Color.BLACK
                 && squareLR > 0 && board.isEmpty(squareLR)) {
             // if the to-be-attacked piece is a king
-            if(piece != null && piece.getRank() == Rank.KING) {
+            if(piece!=null && piece.getRank() == Rank.KING) {
                 points -= POINT_ATTACK_KING;
             } else {
                 points -= POINT_ATTACK_NORMAL;
@@ -195,7 +193,7 @@ public class PriorityMove {
                 && squareLL > 0 && !board.isEmpty(squareLL) && board.getPiece(squareLL).getColor() == Color.BLACK
                 && board.getPiece(squareLL).getRank() == Rank.KING) {
             // if the to-be-attacked piece is a king
-            if (piece != null && piece.getRank() == Rank.KING) {
+            if (piece.getRank() == Rank.KING) {
                 points -= POINT_ATTACK_KING;
             } else {
                 points -= POINT_ATTACK_NORMAL;
@@ -207,7 +205,7 @@ public class PriorityMove {
                 && squareLR > 0 && !board.isEmpty(squareLR) && board.getPiece(squareLR).getColor() == Color.BLACK
                 && board.getPiece(squareLR).getRank() == Rank.KING) {
             // if the to-be-attacked piece is a king
-            if(piece != null && piece.getRank() == Rank.KING) {
+            if(piece.getRank() == Rank.KING) {
                 points -= POINT_ATTACK_KING;
             } else {
                 points -= POINT_ATTACK_NORMAL;
@@ -294,5 +292,6 @@ public class PriorityMove {
 
         return points;
     }
+
 }
 

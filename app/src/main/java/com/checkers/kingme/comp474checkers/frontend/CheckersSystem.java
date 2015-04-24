@@ -1,30 +1,26 @@
 package com.checkers.kingme.comp474checkers.frontend;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.TextView;
 
 import com.checkers.kingme.comp474checkers.ComputerPlayerActivity;
+import com.checkers.kingme.comp474checkers.LocalMultiPlayerActivity;
 import com.checkers.kingme.comp474checkers.MainActivity;
-import com.checkers.kingme.comp474checkers.RemoteMultiPlayerActivity;
-import com.checkers.kingme.comp474checkers.backend.CheckersGame;
+import com.checkers.kingme.comp474checkers.R;
 import com.checkers.kingme.comp474checkers.backend.Color;
 import com.checkers.kingme.comp474checkers.backend.GameMode;
-import com.checkers.kingme.comp474checkers.model.CheckersStateMachine;
-import com.checkers.kingme.comp474checkers.LocalMultiPlayerActivity;
 import com.checkers.kingme.comp474checkers.backend.Piece;
+import com.checkers.kingme.comp474checkers.model.CheckersStateMachine;
+import com.checkers.kingme.comp474checkers.model.ViewUpdateListener;
 import com.checkers.kingme.comp474checkers.player.LocalPlayer;
 import com.checkers.kingme.comp474checkers.player.Player;
-import com.checkers.kingme.comp474checkers.R;
-import com.checkers.kingme.comp474checkers.model.ViewUpdateListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,15 +52,18 @@ public class CheckersSystem extends ActionBarActivity
             firstPlayer = intent.getStringExtra(ComputerPlayerActivity.EXTRA_PLAYER1);
             secondPlayer = intent.getStringExtra(ComputerPlayerActivity.EXTRA_PLAYER2);
             gameMode = GameMode.ONE_PLAYER;
+            stateMachine = new CheckersStateMachine(this,gameMode);
         }
         else if(intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER1) != null
                 && intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER2) != null) {
             firstPlayer = intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER1);
             secondPlayer = intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER2);
             gameMode = GameMode.TWO_PLAYER;
+            stateMachine = new CheckersStateMachine(this);
         }
         else  {
             gameMode = GameMode.NETWORK_PLAY;
+            stateMachine = new CheckersStateMachine(this);
         }
 
         TextView t1 = (TextView) findViewById(R.id.txt_Player1);
@@ -72,7 +71,7 @@ public class CheckersSystem extends ActionBarActivity
         TextView t2 = (TextView) findViewById(R.id.txt_Player2);
         t2.setText("  " + secondPlayer);
 
-        stateMachine = new CheckersStateMachine(this);
+
 
         players = new HashMap<Color, Player>();
 

@@ -26,6 +26,7 @@ public class CheckersGame {
 
     private int toMove; // this integer stores the position of the piece currently picked up
     private boolean jumps; // this flag is used to stop non-jump moves when jumps are possible
+    private GameMode gameMode;
 
     // Constructor. Doesn't take any arguments (thus far). Does a fresh start.
     public CheckersGame(GameListener listener)//players? system?
@@ -36,6 +37,17 @@ public class CheckersGame {
         this.listener = listener;
         listener.onBegin(board.getBoard());
         listener.onNewTurn(turn);
+    }
+
+    public CheckersGame(GameListener listener, GameMode gameMode)//players? system?
+    {
+        board = new CurrentBoard(); //
+        turn = Color.BLACK;
+        moveList = new ArrayList<String>();
+        this.listener = listener;
+        listener.onBegin(board.getBoard());
+        listener.onNewTurn(turn);
+        this.gameMode = gameMode;
     }
 
     // Takes two positions diagonally two squares away in the board and returns the position of the
@@ -482,7 +494,7 @@ public class CheckersGame {
             listener.onNewTurn(turn);
         }
 
-        if(turn == Color.RED){
+        if(turn == Color.RED && gameMode == GameMode.ONE_PLAYER){
             while(turn == Color.RED) {
                 Move move = getBestMove();
                 if (move != null) {
@@ -490,7 +502,7 @@ public class CheckersGame {
                     moveTo(move.to());
                     Log.i("PRIORITY SELECT from", "" + move.from());
                     Log.i("PRIORITY SELECT to", "" + move.to());
-                    Log.i("PRIORITY SELECT priority", "" + move.getPriority());
+                    Log.i("PRIORITY SELECT prioriy", "" + move.getPriority());
                 } else {
                     Log.i("PRIORITY SELECT", "Null");
                 }
