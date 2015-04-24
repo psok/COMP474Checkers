@@ -482,7 +482,7 @@ public class CheckersGame {
             listener.onNewTurn(turn);
         }
 
-        /*if(turn == Color.RED){
+        if(turn == Color.RED){
             while(turn == Color.RED) {
                 Move move = getBestMove();
                 if (move != null) {
@@ -495,7 +495,7 @@ public class CheckersGame {
                     Log.i("PRIORITY SELECT", "Null");
                 }
             }
-        }*/
+        }
 
     }
 
