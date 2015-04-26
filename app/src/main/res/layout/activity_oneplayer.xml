@@ -51,7 +51,7 @@
         android:id="@+id/edittext_onePlayerHuman"
         android:hint="Player1"
         android:editable="true"
-        android:background="#fff7fff7"
+        android:background="#ffffffff"
         android:layout_above="@+id/textView_onePlayerComputer"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />

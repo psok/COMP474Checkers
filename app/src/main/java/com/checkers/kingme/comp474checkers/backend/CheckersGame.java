@@ -1,9 +1,12 @@
 package com.checkers.kingme.comp474checkers.backend;
 
+import android.util.Log;
+
 import com.checkers.kingme.comp474checkers.model.GameListener;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 
 /* CheckersGame Class
@@ -23,6 +26,7 @@ public class CheckersGame {
 
     private int toMove; // this integer stores the position of the piece currently picked up
     private boolean jumps; // this flag is used to stop non-jump moves when jumps are possible
+    private GameMode gameMode;
 
     // Constructor. Doesn't take any arguments (thus far). Does a fresh start.
     public CheckersGame(GameListener listener)//players? system?
@@ -33,6 +37,17 @@ public class CheckersGame {
         this.listener = listener;
         listener.onBegin(board.getBoard());
         listener.onNewTurn(turn);
+    }
+
+    public CheckersGame(GameListener listener, GameMode gameMode)//players? system?
+    {
+        board = new CurrentBoard(); //
+        turn = Color.BLACK;
+        moveList = new ArrayList<String>();
+        this.listener = listener;
+        listener.onBegin(board.getBoard());
+        listener.onNewTurn(turn);
+        this.gameMode = gameMode;
     }
 
     // Takes two positions diagonally two squares away in the board and returns the position of the
@@ -179,7 +194,6 @@ public class CheckersGame {
                 return;
             }
         }
-
         jumps = false;
     }
 
@@ -199,7 +213,7 @@ public class CheckersGame {
     /* The following methods implement the checkers board algebra. Given a square, they return the
      * number of the upper left (UL), upper right (UR), lower left (LL) or upper right (UR) neighbour
      */
-    private int checkUL(int square) {
+    public static int checkUL(int square) {
         int location;
         int neighborSquare;
 
@@ -232,7 +246,7 @@ public class CheckersGame {
         }
     }
 
-    private int checkUR(int square) {
+    public static int checkUR(int square) {
         int location;
         int neighborSquare;
 
@@ -265,7 +279,7 @@ public class CheckersGame {
         }
     }
 
-    private int checkLL(int square) {
+    public static int checkLL(int square) {
         int location;
         int neighborSquare;
 
@@ -298,7 +312,7 @@ public class CheckersGame {
         }
     }
 
-    private int checkLR(int square) {
+    public static int checkLR(int square) {
         int location;
         int neighborSquare;
 
@@ -333,7 +347,7 @@ public class CheckersGame {
 
     // Given a position, determines if there's a piece that can be picked up by the current turn
     // player to move at the current state and returns true if so
-    private boolean canPick(int square) {
+    protected boolean canPick(int square) {
         if (jumps) {
             if (canJump(square)) {
                 return true;
@@ -348,7 +362,7 @@ public class CheckersGame {
     }
 
     // Given two position integers, determines if a legal move can be made this turn between them.
-    private boolean isLegalMove(int from, int to) {
+   private boolean isLegalMove(int from, int to) {
         int difference, jumped;
         boolean check = false;
         boolean jump = false;
@@ -479,6 +493,22 @@ public class CheckersGame {
         } else {
             listener.onNewTurn(turn);
         }
+
+        if(turn == Color.RED && gameMode == GameMode.ONE_PLAYER){
+            while(turn == Color.RED) {
+                Move move = getBestMove();
+                if (move != null) {
+                    pickUp(move.from());
+                    moveTo(move.to());
+                    Log.i("PRIORITY SELECT from", "" + move.from());
+                    Log.i("PRIORITY SELECT to", "" + move.to());
+                    Log.i("PRIORITY SELECT prioriy", "" + move.getPriority());
+                } else {
+                    Log.i("PRIORITY SELECT", "Null");
+                }
+            }
+        }
+
     }
 
     /**
@@ -504,4 +534,127 @@ public class CheckersGame {
             this.turn = Color.BLACK;
         }
     }
+
+    public Vector<Move> getAllLegalMoves() {
+        Vector<Move> myMove = new Vector<Move>();
+
+        for (int square = 1; square <= 32; ++square) {
+            Log.i("kkkk", "" + square + board.getPiece(square));
+            int neighbor, nextNeighbor;
+            if (!board.isEmpty(square) && board.getPiece(square).getColor() == Color.RED) {
+                Piece piece = board.getPiece(square);
+                if(jumps) {
+                    if (piece.getRank() == Rank.KING) {
+                        neighbor = checkLL(square);
+                        if (neighbor != 0
+                                && !board.isEmpty(neighbor)
+                                && board.getPiece(neighbor).getColor() != Color.RED
+                                && (nextNeighbor = checkLL(neighbor)) != 0
+                                && board.isEmpty(nextNeighbor)) {
+                            Move move = new Move();
+                            move.setMove(square, nextNeighbor, true);
+                            myMove.add(move);
+                        }
+
+                        neighbor = checkLR(square);
+                        if (neighbor != 0
+                                && !board.isEmpty(neighbor)
+                                && board.getPiece(neighbor).getColor() != turn
+                                && (nextNeighbor = checkLR(neighbor)) != 0
+                                && board.isEmpty(nextNeighbor)) {
+                            Move move = new Move();
+                            move.setMove(square, nextNeighbor, true);
+                            myMove.add(move);
+                        }
+                    }
+
+                    if (turn == Color.RED) {
+                        neighbor = checkUL(square);
+                        if (neighbor != 0
+                                && !board.isEmpty(neighbor)
+                                && board.getPiece(neighbor).getColor() != turn
+                                && (nextNeighbor = checkUL(neighbor)) != 0
+                                && board.isEmpty(nextNeighbor)) {
+                            Move move = new Move();
+                            move.setMove(square, nextNeighbor, true);
+                            myMove.add(move);
+                        }
+
+                        neighbor = checkUR(square);
+                        if (neighbor != 0
+                                && !board.isEmpty(neighbor)
+                                && board.getPiece(neighbor).getColor() != turn
+                                && (nextNeighbor = checkUR(neighbor)) != 0
+                                && board.isEmpty(nextNeighbor)) {
+                            Move move = new Move();
+                            move.setMove(square, nextNeighbor, true);
+                            myMove.add(move);
+                        }
+                    }
+                } else {
+                    if (piece.getRank() == Rank.KING) {
+                        neighbor = checkLL(square);
+                        if (neighbor != 0
+                                && board.isEmpty(neighbor)) {
+                            Move move = new Move();
+                            move.setMove(square, neighbor, true);
+                            myMove.add(move);
+                        }
+
+                        neighbor = checkLR(square);
+                        if (neighbor != 0
+                                && board.isEmpty(neighbor)) {
+                            Move move = new Move();
+                            move.setMove(square, neighbor, true);
+                            myMove.add(move);
+                        }
+                    }
+
+                    if (turn == Color.RED) {
+                        neighbor = checkUL(square);
+                        if (neighbor != 0
+                                && board.isEmpty(neighbor)) {
+                            Move move = new Move();
+                            move.setMove(square, neighbor, true);
+                            myMove.add(move);
+                        }
+
+                        neighbor = checkUR(square);
+                        if (neighbor != 0
+                                && board.isEmpty(neighbor)) {
+                            Move move = new Move();
+                            move.setMove(square, neighbor, true);
+                            myMove.add(move);
+                        }
+                    }
+                }
+            }
+        }
+        return myMove;
+    }
+
+    public Move getBestMove() {
+
+        Vector<Move> myMove = getAllLegalMoves();
+
+        Move[] bestmoves = new Move[0];
+        DecisionTree maxPriorityAtTop = new DecisionTree(bestmoves, 2);
+        PriorityMove p =new PriorityMove();
+        int priority;
+        for (Move m : myMove) {
+            priority = p.evaluateValueofBoard(board, m);
+            m.setPriority(priority);
+            bestmoves = maxPriorityAtTop.insert(m);
+            Log.i("AIAI From: ", ""+m.from());
+            Log.i("AIAI To: ", ""+m.to());
+            Log.i("AIAI IsJump: ", "" + m.isJump());
+            Log.i("AIAI Priority: ", ""+m.getPriority());
+        }
+
+        if(bestmoves.length > 0)
+            return bestmoves[0];
+        else
+            return null;
+    }
+
 }

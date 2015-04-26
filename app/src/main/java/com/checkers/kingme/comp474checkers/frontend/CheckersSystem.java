@@ -2,25 +2,25 @@ package com.checkers.kingme.comp474checkers.frontend;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.TextView;
 
-import com.checkers.kingme.comp474checkers.MainActivity;
-import com.checkers.kingme.comp474checkers.RemoteMultiPlayerActivity;
-import com.checkers.kingme.comp474checkers.backend.Color;
-import com.checkers.kingme.comp474checkers.model.CheckersStateMachine;
+import com.checkers.kingme.comp474checkers.ComputerPlayerActivity;
 import com.checkers.kingme.comp474checkers.LocalMultiPlayerActivity;
+import com.checkers.kingme.comp474checkers.MainActivity;
+import com.checkers.kingme.comp474checkers.R;
+import com.checkers.kingme.comp474checkers.backend.Color;
+import com.checkers.kingme.comp474checkers.backend.GameMode;
 import com.checkers.kingme.comp474checkers.backend.Piece;
+import com.checkers.kingme.comp474checkers.model.CheckersStateMachine;
+import com.checkers.kingme.comp474checkers.model.ViewUpdateListener;
 import com.checkers.kingme.comp474checkers.player.LocalPlayer;
 import com.checkers.kingme.comp474checkers.player.Player;
-import com.checkers.kingme.comp474checkers.R;
-import com.checkers.kingme.comp474checkers.model.ViewUpdateListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,37 +35,43 @@ public class CheckersSystem extends ActionBarActivity
     Map<Integer, SquareView> wayBack;
     Map<Color, Player> players;
     private int previouslyHighlighted = 0;
+    public GameMode gameMode;
+    public Color currentTurn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     { // creates multiple views of squares
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        String firstPlayer = intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER1);
-        String secondPlayer = intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER2);
+        String firstPlayer = "";
+        String secondPlayer = "";
         setContentView(R.layout.activity_game);
-        String mode = "";
 
-        if(firstPlayer == null && secondPlayer == null){
-            mode = "remote";
-        }else {
-            mode = "local";
+        if(intent.getStringExtra(ComputerPlayerActivity.EXTRA_PLAYER1) != null
+                && intent.getStringExtra(ComputerPlayerActivity.EXTRA_PLAYER2) != null) {
+            firstPlayer = intent.getStringExtra(ComputerPlayerActivity.EXTRA_PLAYER1);
+            secondPlayer = intent.getStringExtra(ComputerPlayerActivity.EXTRA_PLAYER2);
+            gameMode = GameMode.ONE_PLAYER;
+            stateMachine = new CheckersStateMachine(this,gameMode);
         }
-
-        if (firstPlayer == null || firstPlayer.isEmpty()) {
-            firstPlayer = "Player1";
+        else if(intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER1) != null
+                && intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER2) != null) {
+            firstPlayer = intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER1);
+            secondPlayer = intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER2);
+            gameMode = GameMode.TWO_PLAYER;
+            stateMachine = new CheckersStateMachine(this);
         }
-        if (secondPlayer == null || secondPlayer.isEmpty()) {
-            secondPlayer = "Player2";
+        else  {
+            gameMode = GameMode.NETWORK_PLAY;
+            stateMachine = new CheckersStateMachine(this);
         }
-
 
         TextView t1 = (TextView) findViewById(R.id.txt_Player1);
         t1.setText("  " + firstPlayer);
         TextView t2 = (TextView) findViewById(R.id.txt_Player2);
         t2.setText("  " + secondPlayer);
 
-        stateMachine = new CheckersStateMachine(this);
+
 
         players = new HashMap<Color, Player>();
 
@@ -174,6 +180,7 @@ public class CheckersSystem extends ActionBarActivity
     public void changeTurn(Color turn) {
         TextView txt = (TextView) findViewById(R.id.your_turn_text);
         txt.setText("Your turn: " + turn);
+        currentTurn = turn;
         for (Map.Entry<Integer, SquareView> sqr : wayBack.entrySet()) {
             sqr.getValue().setOnTapListener(players.get(turn));
         }
@@ -202,15 +209,17 @@ public class CheckersSystem extends ActionBarActivity
     //resign button
     public void resign(View view) {
         new AlertDialog.Builder(this)
-            .setTitle("Resign Request!")
-            .setMessage("Are you sure you want to resign the game?")
+            .setTitle("Resign Request")
+            .setMessage("Are you sure you want to resign from the game?")
             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
+                    if(currentTurn == Color.BLACK)
+                        win(Color.RED);
+                    else
+                        win(Color.BLACK);
                 }
             })
-            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     // do nothing
                 }
@@ -223,6 +232,27 @@ public class CheckersSystem extends ActionBarActivity
     public void backToMenu(View view) {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
+    }
+
+    //NewGame button
+    public void newGame(View view) {
+        new AlertDialog.Builder(this)
+                .setTitle("New Game Request")
+                .setMessage("Are you sure you want to end your current game and start a new game?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(getApplicationContext(), CheckersSystem.class);
+                        finish();
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
 }
