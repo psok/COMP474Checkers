@@ -1,6 +1,8 @@
 package com.checkers.kingme.comp474checkers.backend;
 
 
+import android.util.Log;
+
 /**
  * Created by Richa on 4/11/2015.
  */
@@ -10,15 +12,15 @@ public class PriorityMove {
     public final int POINT_JUMP = 3000;
     public final int POINT_KING = 1000;
     public final int POINT_NORMAL = 500;
-    public final int POINT_DEFENCE = 30;
-    public final int POINT_DEFENCE_ATTACK_NORMAL = 20;
-    public final int POINT_DEFENCE_ATTACK_KING = 40;
-    public final int POINT_ATTACK_NORMAL = 400;
+    public final int POINT_DEFENCE = 300;
+    public final int POINT_DEFENCE_ATTACK_NORMAL = 200;
+    public final int POINT_DEFENCE_ATTACK_KING = 400;
+    public final int POINT_ATTACK_NORMAL = 250;
     public final int POINT_ATTACK_KING = 600;
 
     public int evaluateValueofBoard(CurrentBoard board, Move move) {
         int points = POINT_NORMAL;
-        points += calcPointsForKing(board,move);
+        points += calcPointsForKing(board, move);
         points += calcPointsForJump(board, move);
         points += calcPointsRedBeingAttacked(board, move);
         points += calcPointsRedDefending(board, move);
@@ -26,22 +28,33 @@ public class PriorityMove {
         return points;
     }
 
-    private int calcPointsForKing(CurrentBoard board,Move move) {
+    private int calcPointsForKing(CurrentBoard board, Move move) {
         int points = 0;
-        if(move.to() <= 4 && board.getPiece(move.from()).getRank() != Rank.KING) {
+        if (move.to() <= 4 && board.getPiece(move.from()).getRank() != Rank.KING) {
             points += POINT_KING;
+        }
+        if(move.from() <= 8 && move.from() >= 5){
+            points-=POINT_NORMAL;
         }
         return points;
     }
 
     private int calcPointsForJump(CurrentBoard board, Move move) {
         int points = 0;
-        if(move.isJump()) {
+        if (move.isJump()) {
             points += POINT_JUMP;
         }
-
-
-        return points;
+        int count = 0, to[] = {0};
+        int sqr = move.from();
+        while(canJump(sqr, board, to)){
+            count ++ ;
+            sqr = to[0];
+            if(to[0] <=0 || to[0] > 32){
+                break;
+            }
+        }
+        Log.i("multi Jump " , ""+count );
+        return points + count;
     }
 
 
@@ -64,9 +77,9 @@ public class PriorityMove {
 
     private int blackPieces(CurrentBoard board) {
         int bPieces = 0;
-        for(int i=1; i<=32; i++) {
-            if(board.getPiece(i) != null && board.getPiece(i).getColor() == Color.BLACK) {
-                bPieces ++;
+        for (int i = 1; i <= 32; i++) {
+            if (board.getPiece(i) != null && board.getPiece(i).getColor() == Color.BLACK) {
+                bPieces++;
             }
         }
         return bPieces;
@@ -181,7 +194,7 @@ public class PriorityMove {
         if (squareUL > 0 && !board.isEmpty(squareUL) && board.getPiece(squareUL).getColor() == Color.BLACK
                 && squareLR > 0 && board.isEmpty(squareLR)) {
             // if the to-be-attacked piece is a king
-            if(piece!=null && piece.getRank() == Rank.KING) {
+            if (piece != null && piece.getRank() == Rank.KING) {
                 points -= POINT_ATTACK_KING;
             } else {
                 points -= POINT_ATTACK_NORMAL;
@@ -193,7 +206,7 @@ public class PriorityMove {
                 && squareLL > 0 && !board.isEmpty(squareLL) && board.getPiece(squareLL).getColor() == Color.BLACK
                 && board.getPiece(squareLL).getRank() == Rank.KING) {
             // if the to-be-attacked piece is a king
-            if (piece.getRank() == Rank.KING) {
+            if (piece!=null && piece.getRank() == Rank.KING) {
                 points -= POINT_ATTACK_KING;
             } else {
                 points -= POINT_ATTACK_NORMAL;
@@ -205,7 +218,7 @@ public class PriorityMove {
                 && squareLR > 0 && !board.isEmpty(squareLR) && board.getPiece(squareLR).getColor() == Color.BLACK
                 && board.getPiece(squareLR).getRank() == Rank.KING) {
             // if the to-be-attacked piece is a king
-            if(piece.getRank() == Rank.KING) {
+            if (piece.getRank() == Rank.KING) {
                 points -= POINT_ATTACK_KING;
             } else {
                 points -= POINT_ATTACK_NORMAL;
@@ -246,7 +259,7 @@ public class PriorityMove {
 
             } else if (squareUL > 0 && !board.isEmpty(squareUL) && board.getPiece(squareUL).getColor() == Color.BLACK
                     && squareLR > 0 && board.isEmpty(squareLR)
-                    && ( neighbourLR > 0 && (board.isEmpty(neighbourLR) || board.getPiece(neighbourLR).getColor() == Color.BLACK))) {
+                    && (neighbourLR > 0 && (board.isEmpty(neighbourLR) || board.getPiece(neighbourLR).getColor() == Color.BLACK))) {
                 points -= POINT_DEFENCE_ATTACK_NORMAL;
             } else {
                 points += POINT_DEFENCE;
@@ -270,7 +283,7 @@ public class PriorityMove {
             }
         } else {
             // if the piece is not at the most right column of the board
-            if (move.to() % 8 < 4 ) {
+            if (move.to() % 8 < 4) {
                 if (squareLR > 0 && !board.isEmpty(squareLR) && board.getPiece(squareLR).getColor() == Color.RED) {
                     if (squareUR > 0 && (board.isEmpty(squareUR) || board.getPiece(squareUR).getColor() == Color.RED)) {
                         points += POINT_DEFENCE;
@@ -283,7 +296,7 @@ public class PriorityMove {
             if (move.to() % 8 > 5) {
                 if (squareLL > 0 && !board.isEmpty(squareLL) && board.getPiece(squareLL).getColor() == Color.RED) {
                     if (squareUL > 0 && (board.isEmpty(squareUL) || board.getPiece(squareUL).getColor() == Color.RED))
-                    points += POINT_DEFENCE;
+                        points += POINT_DEFENCE;
                 } else {
                     points += POINT_DEFENCE_ATTACK_NORMAL;
                 }
@@ -291,6 +304,60 @@ public class PriorityMove {
         }
 
         return points;
+    }
+
+    private boolean canJump(int square, CurrentBoard board, int[] to) {
+        int neighbor, nextNeighbor;
+        Piece piece = board.getPiece(square);
+
+        if (piece != null &&
+                piece.getColor() == board.getPiece(square).getColor()) {
+
+            if (piece.getRank() == Rank.KING) {
+                neighbor = CheckersGame.checkLL(square);
+                if (neighbor != 0
+                        && !board.isEmpty(neighbor)
+                        && board.getPiece(neighbor).getColor() != Color.RED
+                        && (nextNeighbor = CheckersGame.checkLL(neighbor)) != 0
+                        && board.isEmpty(nextNeighbor)) {
+                    to[0] = nextNeighbor;
+                    return true;
+                }
+
+                neighbor = CheckersGame.checkLR(square);
+                if (neighbor != 0
+                        && !board.isEmpty(neighbor)
+                        && board.getPiece(neighbor).getColor() != Color.RED
+                        && (nextNeighbor = CheckersGame.checkLR(neighbor)) != 0
+                        && board.isEmpty(nextNeighbor)) {
+                    to[0] = nextNeighbor;
+                    return true;
+                }
+            }
+
+            if (board.getPiece(square).getColor() == Color.RED || piece.getRank() == Rank.KING) {
+                neighbor = CheckersGame.checkUL(square);
+                if (neighbor != 0
+                        && !board.isEmpty(neighbor)
+                        && board.getPiece(neighbor).getColor() != Color.RED
+                        && (nextNeighbor = CheckersGame.checkUL(neighbor)) != 0
+                        && board.isEmpty(nextNeighbor)) {
+                    to[0] = nextNeighbor;
+                    return true;
+                }
+
+                neighbor = CheckersGame.checkUR(square);
+                if (neighbor != 0
+                        && !board.isEmpty(neighbor)
+                        && board.getPiece(neighbor).getColor() != Color.RED
+                        && (nextNeighbor = CheckersGame.checkUR(neighbor)) != 0
+                        && board.isEmpty(nextNeighbor)) {
+                    to[0] = nextNeighbor;
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }
