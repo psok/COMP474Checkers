@@ -4,6 +4,7 @@ package com.checkers.kingme.comp474checkers.network.kmp;
  * Created by Carlos 
  */
 import java.io.*;
+import java.util.Arrays;
 
 // this class implements our KMP (King Me Protocol) ACK packet structure
 public class KMPAcknowledgement extends BaseKMPPacket {
@@ -16,12 +17,12 @@ public class KMPAcknowledgement extends BaseKMPPacket {
     }
 
     // constructor to build a packet incoming from the network
-    public KMPAcknowledgement(byte[] buffer) throws IOException
+    public KMPAcknowledgement(byte[] buffer, int length) throws IOException
     {
         byte bufopcode;
         short bufmsgid;
 
-        ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
+        ByteArrayInputStream bais = new ByteArrayInputStream(Arrays.copyOf(buffer, length));
         DataInputStream dis = new DataInputStream(bais);
         bufopcode = dis.readByte();
         bufmsgid = dis.readShort();
