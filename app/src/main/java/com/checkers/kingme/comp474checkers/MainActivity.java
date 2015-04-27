@@ -7,8 +7,12 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.checkers.kingme.comp474checkers.player.Player;
+
 public class MainActivity extends ActionBarActivity
 {
+    public static Player blackPlayer;
+    public static Player redPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

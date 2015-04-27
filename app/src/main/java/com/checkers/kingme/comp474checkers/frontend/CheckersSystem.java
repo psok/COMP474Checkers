@@ -18,6 +18,7 @@ import com.checkers.kingme.comp474checkers.backend.Color;
 import com.checkers.kingme.comp474checkers.backend.GameMode;
 import com.checkers.kingme.comp474checkers.backend.Piece;
 import com.checkers.kingme.comp474checkers.model.CheckersStateMachine;
+import com.checkers.kingme.comp474checkers.model.NetworkUpdateObserver;
 import com.checkers.kingme.comp474checkers.model.ViewUpdateListener;
 import com.checkers.kingme.comp474checkers.player.LocalPlayer;
 import com.checkers.kingme.comp474checkers.player.Player;
@@ -47,22 +48,23 @@ public class CheckersSystem extends ActionBarActivity
         String secondPlayer = "";
         setContentView(R.layout.activity_game);
 
+        players = new HashMap<Color, Player>();
+
         if(intent.getStringExtra(ComputerPlayerActivity.EXTRA_PLAYER1) != null
                 && intent.getStringExtra(ComputerPlayerActivity.EXTRA_PLAYER2) != null) {
             firstPlayer = intent.getStringExtra(ComputerPlayerActivity.EXTRA_PLAYER1);
             secondPlayer = intent.getStringExtra(ComputerPlayerActivity.EXTRA_PLAYER2);
             gameMode = GameMode.ONE_PLAYER;
+            players.put(Color.BLACK, new LocalPlayer(Color.BLACK, firstPlayer));
+            players.put(Color.RED, new LocalPlayer(Color.RED, secondPlayer));
             stateMachine = new CheckersStateMachine(this,gameMode);
         }
-        else if(intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER1) != null
-                && intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER2) != null) {
-            firstPlayer = intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER1);
-            secondPlayer = intent.getStringExtra(LocalMultiPlayerActivity.EXTRA_PLAYER2);
-            gameMode = GameMode.TWO_PLAYER;
-            stateMachine = new CheckersStateMachine(this);
-        }
-        else  {
-            gameMode = GameMode.NETWORK_PLAY;
+        else {
+            firstPlayer = MainActivity.blackPlayer.getName();
+            secondPlayer = MainActivity.redPlayer.getName();
+
+            players.put(Color.BLACK, MainActivity.blackPlayer);
+            players.put(Color.RED, MainActivity.redPlayer);
             stateMachine = new CheckersStateMachine(this);
         }
 
@@ -71,14 +73,19 @@ public class CheckersSystem extends ActionBarActivity
         TextView t2 = (TextView) findViewById(R.id.txt_Player2);
         t2.setText("  " + secondPlayer);
 
+        players.get(Color.BLACK).setStateHandler(stateMachine);
+        players.get(Color.RED).setStateHandler(stateMachine);
 
-
-        players = new HashMap<Color, Player>();
-
-        players.put(Color.BLACK, new LocalPlayer(Color.BLACK, firstPlayer, stateMachine));
-        players.put(Color.RED, new LocalPlayer(Color.RED, secondPlayer, stateMachine));
-
-        stateMachine.start();
+        stateMachine.start(new NetworkUpdateObserver() {
+            @Override
+            public void onCompleteMove(int from, char type, int to) {
+                if (currentTurn == Color.BLACK) {
+                    players.get(Color.RED).notify(from, type, to);
+                } else {
+                    players.get(Color.BLACK).notify(from, type, to);
+                }
+            }
+        });
     }
 
     public void initialize()
@@ -177,13 +184,18 @@ public class CheckersSystem extends ActionBarActivity
         previouslyHighlighted = 0;
     }
 
-    public void changeTurn(Color turn) {
-        TextView txt = (TextView) findViewById(R.id.your_turn_text);
-        txt.setText("Your turn: " + turn);
-        currentTurn = turn;
-        for (Map.Entry<Integer, SquareView> sqr : wayBack.entrySet()) {
-            sqr.getValue().setOnTapListener(players.get(turn));
+    public boolean changeTurn(Color turn) {
+        players.get(turn).wake(this);
+        if (!turn.equals(currentTurn)) {
+            TextView txt = (TextView) findViewById(R.id.your_turn_text);
+            txt.setText("Your turn: " + turn);
+            currentTurn = turn;
+            for (Map.Entry<Integer, SquareView> sqr : wayBack.entrySet()) {
+                sqr.getValue().setOnTapListener(players.get(turn));
+            }
+            return true;
         }
+        return false;
     }
 
     public void win(Color turn) {

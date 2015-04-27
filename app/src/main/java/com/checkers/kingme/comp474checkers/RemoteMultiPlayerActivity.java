@@ -3,9 +3,11 @@ package com.checkers.kingme.comp474checkers;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,12 +15,16 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.checkers.kingme.comp474checkers.backend.Color;
+import com.checkers.kingme.comp474checkers.frontend.CheckersSystem;
 import com.checkers.kingme.comp474checkers.network.NetworkListener;
 import com.checkers.kingme.comp474checkers.network.NetworkMessenger;
 import com.checkers.kingme.comp474checkers.network.kmp.BaseKMPPacket;
 import com.checkers.kingme.comp474checkers.network.kmp.KMPAcknowledgement;
 import com.checkers.kingme.comp474checkers.network.kmp.KMPChallenge;
 import com.checkers.kingme.comp474checkers.network.kmp.KMPResponse;
+import com.checkers.kingme.comp474checkers.player.LocalPlayer;
+import com.checkers.kingme.comp474checkers.player.RemotePlayer;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -29,10 +35,12 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 
 
-public class RemoteMultiPlayerActivity extends ActionBarActivity {
+public class RemoteMultiPlayerActivity extends ActionBarActivity
+{
 
     private EditText dest;
-    private DatagramSocket sock;
+    private DatagramSocket sndsock;
+    private DatagramSocket rcvsock;
     private InetAddress destaddr;
 
     NetworkListener nl;
@@ -46,6 +54,7 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
     private EditText editTextFirstPlayer;// = (EditText) findViewById(R.id.edittext_firstPlayerName);
 
     private boolean response;
+    private int chgid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,14 +79,16 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
         muhip.setText(localWiFiAddr.toString());
 
         try {
-            sock = new DatagramSocket(BaseKMPPacket.DEFAULTPORT, localWiFiAddr);
+            sndsock = new DatagramSocket(BaseKMPPacket.EXTRAPORT, localWiFiAddr);
+            rcvsock = new DatagramSocket(BaseKMPPacket.DEFAULTPORT, localWiFiAddr);
         }
         catch (SocketException se) {
             System.err.println("No socket available!");
             return;
         }
         try {
-            sock.setSoTimeout(BaseKMPPacket.HARDTIMEOUT);       // time in milliseconds
+            sndsock.setSoTimeout(BaseKMPPacket.HARDTIMEOUT);
+            rcvsock.setSoTimeout(BaseKMPPacket.HARDTIMEOUT);        // time in milliseconds
         } catch (SocketException se) {
             System.err.println("Socket exception: timeout not set!");
             return;
@@ -88,7 +99,7 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
 
     private void acceptChallenges()
     {
-        nl = new NetworkListener(this, sock,new NetworkListener.NetworkReturnCallback() {
+        nl = new NetworkListener(this, rcvsock,new NetworkListener.NetworkReturnCallback() {
             public void callback(NetworkListener origin) {
                 receiveChallengeDialogue((KMPChallenge)origin.getKMPPacket(), origin.getReceivedDG().getAddress());
             }
@@ -128,15 +139,16 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
         }
 
         myName = editTextFirstPlayer.getText().toString();
+        chgid = (int)(Math.random()*4913);
 
         nl.giveUp();
 
-        nm = new NetworkMessenger(this, sock, new NetworkMessenger.NetworkSendCallback() {
+        nm = new NetworkMessenger(this, sndsock, new NetworkMessenger.NetworkSendCallback() {
             public void callback() {
                 chgDialogue.setTitle("Awaiting response...");
                 awaitResponse();
             }
-        }, new KMPChallenge(1, myName), destaddr);
+        }, new KMPChallenge(chgid, myName), destaddr);
 
         nm.dispatch();
 
@@ -192,12 +204,17 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
                 .show();
     }
 
-    public void responded(KMPChallenge kmpc, InetAddress sender)
+    public void responded(final KMPChallenge kmpc, final InetAddress sender)
     {
-        nm = new NetworkMessenger(getActivity(), sock, new NetworkMessenger.NetworkSendCallback() {
+        nm = new NetworkMessenger(getActivity(), sndsock, new NetworkMessenger.NetworkSendCallback() {
             public void callback() {
                 if (response) {
-                    // TODO START GAME
+                    Intent intent = new Intent(getActivity() , CheckersSystem.class);
+
+                    MainActivity.blackPlayer = new RemotePlayer(Color.BLACK, kmpc.playerName(), rcvsock, sndsock, sender, kmpc.msgid()+2);
+                    MainActivity.redPlayer = new LocalPlayer(Color.RED, myName);
+
+                    startActivity(intent);
                 } else {
                     acceptChallenges();
                 }
@@ -208,18 +225,32 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
 
     public void awaitResponse()
     {
-        new NetworkListener(this, sock,new NetworkListener.NetworkReturnCallback() {
+        new NetworkListener(this, rcvsock,new NetworkListener.NetworkReturnCallback() {
             public void callback(NetworkListener origin) {
                 KMPResponse kmpr = (KMPResponse)origin.getKMPPacket();
                 String playerName = kmpr.playerName();
                 String resp = kmpr.response() ? "accepted" : "refused";
                 chgDialogue.setTitle(playerName + " " + resp + " your challenge");
-                if (response){
-                    // TODO START GAME!!!
+
+                // this kills the dialogue :(
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        chgDialogue.dismiss();
+                    }
+                }, 1000);
+
+                if (kmpr.response()){
+                    Intent intent = new Intent(getActivity() , CheckersSystem.class);
+
+                    MainActivity.blackPlayer = new LocalPlayer(Color.BLACK, myName);
+                    MainActivity.redPlayer = new RemotePlayer(Color.RED, kmpr.playerName(), rcvsock, sndsock, destaddr, chgid + 2);
+
+                    startActivity(intent);
                 } else {
                     acceptChallenges();
                 }
             }
-        }, BaseKMPPacket.RSPop, destaddr, 2).listen();
+        }, BaseKMPPacket.RSPop, destaddr, chgid + 1).listen();
     }
 }

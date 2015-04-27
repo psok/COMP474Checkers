@@ -103,11 +103,13 @@ public class NetworkMessenger
                 }
             }
 
-            act.runOnUiThread(new Runnable() {
-                public void run() {
-                    callback.callback();
-                }
-            });
+            if (act != null) {
+                act.runOnUiThread(new Runnable() {
+                    public void run() {
+                        callback.callback();
+                    }
+                });
+            }
         }
     }
 

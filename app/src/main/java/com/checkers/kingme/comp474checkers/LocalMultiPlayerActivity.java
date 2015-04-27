@@ -8,16 +8,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.checkers.kingme.comp474checkers.backend.Color;
 import com.checkers.kingme.comp474checkers.frontend.CheckersSystem;
+import com.checkers.kingme.comp474checkers.player.LocalPlayer;
 
 
-public class LocalMultiPlayerActivity extends ActionBarActivity {
-
-
+public class LocalMultiPlayerActivity extends ActionBarActivity
+{
+    /*
     private String player1="Player1";
     private String player2="Player2";
     public final static String EXTRA_PLAYER1 = "Player1";
     public final static String EXTRA_PLAYER2 = "Player2";
+    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,19 +29,28 @@ public class LocalMultiPlayerActivity extends ActionBarActivity {
     }
     // Call game activity
     public void sendMessage(View view) {
-
-        Intent intent = new Intent(this , CheckersSystem.class);
+        String blackName;
+        String redName;
+        Intent intent = new Intent(this, CheckersSystem.class);
 
         //Send  player's name to checkersSystem activity
         EditText editTextFirstPlayer = (EditText) findViewById(R.id.edittext_firstplayer);
-        if(!editTextFirstPlayer.getText().toString().isEmpty())
-            setPlayer1(editTextFirstPlayer.getText().toString());
-        intent.putExtra(EXTRA_PLAYER1, player1);
 
+        if (editTextFirstPlayer.getText().toString().isEmpty()) {
+            blackName = "Player1";
+        } else {
+            blackName = editTextFirstPlayer.getText().toString();
+        }
         EditText editTextSecondPlayer= (EditText) findViewById(R.id.editText_secondPlayer);
-        if(!editTextSecondPlayer.getText().toString().isEmpty())
-            setPlayer2(editTextSecondPlayer.getText().toString());
-        intent.putExtra(EXTRA_PLAYER2, player2);
+
+        if (editTextSecondPlayer.getText().toString().isEmpty()) {
+            redName = "Player2";
+        } else {
+            redName = editTextSecondPlayer.getText().toString();
+        }
+
+        MainActivity.blackPlayer = new LocalPlayer(Color.BLACK, blackName);
+        MainActivity.redPlayer = new LocalPlayer(Color.RED, redName);
 
         startActivity(intent);
     }
@@ -63,21 +75,5 @@ public class LocalMultiPlayerActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public String getPlayer1() {
-        return player1;
-    }
-
-    public void setPlayer1(String player1) {
-        this.player1 = player1;
-    }
-
-    public String getPlayer2() {
-        return player2;
-    }
-
-    public void setPlayer2(String player2) {
-        this.player2 = player2;
     }
 }

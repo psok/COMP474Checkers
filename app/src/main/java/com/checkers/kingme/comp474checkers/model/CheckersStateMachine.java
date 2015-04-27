@@ -36,12 +36,13 @@ public class CheckersStateMachine implements GameListener, GameState {
         this.gameMode = gameMode;
     }
 
-    public void start() {
+    public void start(NetworkUpdateObserver nuo) {
         if (gameMode == GameMode.ONE_PLAYER) {
             game = new CheckersGame(this, gameMode);
         } else {
             game = new CheckersGame(this);
         }
+        game.setNetworkUpdateObserver(nuo);
     }
 
     public void onBegin(Piece[] board) {
@@ -68,8 +69,9 @@ public class CheckersStateMachine implements GameListener, GameState {
     }
 
     public void onNewTurn(Color turn) {
-        currentState = Turn;
-        view.changeTurn(turn);
+        if (view.changeTurn(turn)) {
+            currentState = Turn;
+        }
     }
 
     public void onGetInput(int squareID) {

@@ -14,7 +14,7 @@ public interface ViewUpdateListener
 
     public void invalidateView(Piece[] board);
 
-    public void changeTurn(Color turn);
+    public boolean changeTurn(Color turn);
 
     public void win(Color turn);
 }

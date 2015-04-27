@@ -75,6 +75,7 @@ public class NetworkListener
                     if (exp_msgid != 0 && pkt.msgid() != exp_msgid) {
                         throw new IOException();
                     }
+
                     break;
                 } catch (IOException ioe) {
                     System.err.println("Bad receive!");
@@ -86,7 +87,7 @@ public class NetworkListener
 
             DatagramPacket ackDG;
             try {
-                ackDG = new DatagramPacket(new byte[0], 0, senderAddr, BaseKMPPacket.DEFAULTPORT);
+                ackDG = new DatagramPacket(new byte[0], 0, senderAddr, udpDG.getPort());
 
                 KMPAcknowledgement ackPKT = new KMPAcknowledgement(pkt.msgid());
 
@@ -139,7 +140,7 @@ public class NetworkListener
                     System.err.println("Bad receive!");
                     continue;
                 }
-            } while (System.currentTimeMillis() - sendtime < (BaseKMPPacket.INITTIMEOUT) * 1.5);
+            } while (System.currentTimeMillis() - sendtime < (BaseKMPPacket.INITTIMEOUT));
         }
     }
 

@@ -18,10 +18,11 @@ public abstract class BaseKMPPacket {
 
     // the default port to be used by the protocol
     public static final short DEFAULTPORT = 8888;
+    public static final short EXTRAPORT = 8889;
 
     // some standard parameters
-    public static final int   INITTIMEOUT = 3000;      // milliseconds
-    public static final int   HARDTIMEOUT = 250;      // milliseconds
+    public static final int   INITTIMEOUT = 1100;      // milliseconds
+    public static final int   HARDTIMEOUT = 200;      // milliseconds
     public static final int   SHORTSIZE = 2;           // in bytes
     public static final int   INTSIZE = 4;
     public static final int   BASESIZE = 1 + SHORTSIZE;// opcode (byte) + msgid (short)

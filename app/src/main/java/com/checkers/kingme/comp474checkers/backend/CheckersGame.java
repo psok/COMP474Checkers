@@ -3,6 +3,7 @@ package com.checkers.kingme.comp474checkers.backend;
 import android.util.Log;
 
 import com.checkers.kingme.comp474checkers.model.GameListener;
+import com.checkers.kingme.comp474checkers.model.NetworkUpdateObserver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,12 @@ public class CheckersGame {
 
     }
 
+    private NetworkUpdateObserver nullNUO = new NetworkUpdateObserver() {
+        public void onCompleteMove(int from, char type, int to) {
+            return;
+        }
+    };
+
     private CurrentBoard board;
     private Color turn;
     private List<String> moveList;
@@ -28,9 +35,12 @@ public class CheckersGame {
     private boolean jumps; // this flag is used to stop non-jump moves when jumps are possible
     private GameMode gameMode;
 
-    // Constructor. Doesn't take any arguments (thus far). Does a fresh start.
+    private NetworkUpdateObserver nuo = nullNUO;
+
+    // Constructor. Does a fresh start.
     public CheckersGame(GameListener listener)//players? system?
     {
+        nuo = nullNUO;
         board = new CurrentBoard(); //
         turn = Color.BLACK;
         moveList = new ArrayList<String>();
@@ -41,12 +51,7 @@ public class CheckersGame {
 
     public CheckersGame(GameListener listener, GameMode gameMode)//players? system?
     {
-        board = new CurrentBoard(); //
-        turn = Color.BLACK;
-        moveList = new ArrayList<String>();
-        this.listener = listener;
-        listener.onBegin(board.getBoard());
-        listener.onNewTurn(turn);
+        this(listener);
         this.gameMode = gameMode;
     }
 
@@ -455,21 +460,27 @@ public class CheckersGame {
     // if successful (move is valid), false if not. Ends turn after movement if no more moves can be
     // made.
     public boolean moveTo(int to) {
+        boolean crownFlag = false;
+
         if (toMove == 0) {
             throw new MoveWithoutPickException();
         }
 
         if (isLegalMove(toMove, to)) {
             board.movePiece(toMove, to);
-            if (((to >= 1) && (to <= 4)) || ((to >= 29) && (to <= 32))) {
+            if ((((to >= 1) && (to <= 4)) || ((to >= 29) && (to <= 32)))
+                && (board.getPiece(to).getRank() == Rank.CHECKER)) {
                 board.getPiece(to).crown();
+                crownFlag = true;
             }
             if (isJump(toMove, to)) {
                 board.removePiece(between(toMove, to));
                 listener.onMove(board.getBoard());
                 logMove(toMove, to, true);
-                if (!pickUp(to)) {
+                if (crownFlag || !pickUp(to)) {
                     endTurn();
+                } else { // MULTIPLE JUMP!!!
+                    continueTurn();
                 }
             } else {
                 listener.onMove(board.getBoard());
@@ -480,6 +491,12 @@ public class CheckersGame {
         } else {
             return false;
         }
+    }
+
+
+    private void continueTurn()
+    {
+        listener.onNewTurn(turn);
     }
 
     // Ends the current turn.
@@ -521,10 +538,13 @@ public class CheckersGame {
         String log;
         if (isJump) {
             log = pickUp + "*" + moveTo;
+            nuo.onCompleteMove(pickUp, 'x', moveTo);
         } else {
             log = pickUp + "-" + moveTo;
+            nuo.onCompleteMove(pickUp, '-', moveTo);
         }
         moveList.add(log);
+
     }
 
     private void changeTurn() {
@@ -655,6 +675,11 @@ public class CheckersGame {
             return bestmoves[0];
         else
             return null;
+    }
+
+    public void setNetworkUpdateObserver(NetworkUpdateObserver nuo)
+    {
+        this.nuo = nuo;
     }
 
 }
