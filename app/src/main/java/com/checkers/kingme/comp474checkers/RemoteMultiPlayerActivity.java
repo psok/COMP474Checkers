@@ -3,7 +3,6 @@ package com.checkers.kingme.comp474checkers;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -14,41 +13,47 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.checkers.kingme.comp474checkers.frontend.CheckersSystem;
+import com.checkers.kingme.comp474checkers.network.NetworkListener;
+import com.checkers.kingme.comp474checkers.network.NetworkMessenger;
 import com.checkers.kingme.comp474checkers.network.kmp.BaseKMPPacket;
 import com.checkers.kingme.comp474checkers.network.kmp.KMPAcknowledgement;
 import com.checkers.kingme.comp474checkers.network.kmp.KMPChallenge;
+import com.checkers.kingme.comp474checkers.network.kmp.KMPResponse;
 
 import java.io.IOException;
-import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 
 
 public class RemoteMultiPlayerActivity extends ActionBarActivity {
 
     private EditText dest;
     private DatagramSocket sock;
-    private String destaddr;
+    private InetAddress destaddr;
 
-    Thread messengerThread;
-
-    final int PORT = BaseKMPPacket.DEFAULTPORT;
-    final int BUFSIZE = 512;
+    NetworkListener nl;
+    NetworkMessenger nm;
 
     //InetAddress localWiFiAddr;
-
-    private String playerName="Player1";
     public final static String EXTRA_PLAYER1 = "playerName";
     private AlertDialog chgDialogue;
+
+    private String myName;
+    private EditText editTextFirstPlayer;// = (EditText) findViewById(R.id.edittext_firstPlayerName);
+
+    private boolean response;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_remote_multi_player);
+
+        editTextFirstPlayer = (EditText) findViewById(R.id.edittext_firstPlayerName);
         dest = (EditText)findViewById(R.id.editText_secondPlayerAddress);
         TextView muhip = (TextView) findViewById(R.id.textView_firstPlayerAddress);
         WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
@@ -62,12 +67,10 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
             return;
         }
 
-        //muhip.append(localWiFiAddr.toString());
-
         muhip.setText(localWiFiAddr.toString());
 
         try {
-            sock = new DatagramSocket(PORT, localWiFiAddr);
+            sock = new DatagramSocket(BaseKMPPacket.DEFAULTPORT, localWiFiAddr);
         }
         catch (SocketException se) {
             System.err.println("No socket available!");
@@ -80,10 +83,17 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
             return;
         }
 
-        NetworkListener netl = new NetworkListener();
-        Thread listenerThread = new Thread(netl);
-        listenerThread.start();
+        acceptChallenges();
+    }
 
+    private void acceptChallenges()
+    {
+        nl = new NetworkListener(this, sock,new NetworkListener.NetworkReturnCallback() {
+            public void callback(NetworkListener origin) {
+                receiveChallengeDialogue((KMPChallenge)origin.getKMPPacket(), origin.getReceivedDG().getAddress());
+            }
+        }, BaseKMPPacket.CHGop);
+        nl.listen();
     }
 
 
@@ -109,27 +119,29 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void sendChallenge(View view){
+    public void sendChallenge(View view) {
+
+        try {
+            destaddr = InetAddress.getByName(dest.getText().toString());
+        } catch (UnknownHostException uhe) {
+            System.err.println("Couldn't figure out destination host!");
+        }
+
+        myName = editTextFirstPlayer.getText().toString();
+
+        nl.giveUp();
+
+        nm = new NetworkMessenger(this, sock, new NetworkMessenger.NetworkSendCallback() {
+            public void callback() {
+                chgDialogue.setTitle("Awaiting response...");
+                awaitResponse();
+            }
+        }, new KMPChallenge(1, myName), destaddr);
+
+        nm.dispatch();
 
         sendChallengeDialogue();
-
-        //message = msgtext.getText().toString();
-        destaddr = dest.getText().toString();
-
-        NetworkMessenger netm = new NetworkMessenger();
-        messengerThread = new Thread(netm);
-        messengerThread.start();
     }
-
-
-    public void sendMessage(String msg, String add){
-        destaddr = add;
-
-        NetworkMessenger netm = new NetworkMessenger();
-        messengerThread = new Thread(netm);
-        messengerThread.start();
-    }
-
 
     private InetAddress intToInetAddr(int ip) throws UnknownHostException
     {
@@ -139,149 +151,6 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
                 (byte)(0xff & (ip >> 24)) };
 
         return InetAddress.getByAddress(octets);
-    }
-    class NetworkListener implements Runnable
-    {
-
-        public void run ()
-        {
-            DatagramPacket msgDG = new DatagramPacket(new byte[BUFSIZE], BUFSIZE);
-            String addr;
-
-            while(true) { // read loop
-                try {
-                    msgDG.setLength(BUFSIZE);
-                    sock.receive(msgDG);
-                } catch (InterruptedIOException iioe) {
-                    System.err.println("Response timed out!");
-                    continue;
-                } catch (IOException ioe) {
-                    System.err.println("Bad receive!");
-                    continue;
-                }
-                addr = msgDG.getAddress().getHostAddress();
-                //final String str = new String(msgDG.getData(), 0, msgDG.getLength());
-                final String str = new String(msgDG.getData(), 0, msgDG.getLength());
-                final String finalAddr = addr;
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        if(str.equalsIgnoreCase("Accept")){
-                            Intent intent = new Intent(getActivity(), CheckersSystem.class);
-                            startActivity(intent);
-                        }else if (str.equalsIgnoreCase("Reject")){
-
-                        }else {
-                            recieveChallengeDialogue(finalAddr);
-                        }
-                    }
-                });
-            }
-        }
-    }
-    public class NetworkMessenger implements Runnable {
-
-
-        public void run()
-        {
-            // TODO: cancel mechanism
-            // TODO: show dialog saying "Sending challenge..."  with CANCEL button
-
-            InetAddress destination;
-
-            DatagramPacket msgDG;
-            try {
-                destination = InetAddress.getByName(destaddr);
-
-                msgDG = new DatagramPacket(new byte[0], 0, destination, PORT);
-
-                //Send  player's name to checkersSystem activity
-                EditText editTextFirstPlayer = (EditText) findViewById(R.id.edittext_firstPlayerName);
-                setPlayerName(editTextFirstPlayer.getText().toString());
-
-                KMPChallenge pack = new KMPChallenge(1, playerName);
-
-                msgDG.setData(pack.write());
-                msgDG.setLength(pack.size());
-
-            }
-            catch (UnknownHostException uhe) {
-                System.err.println("Couldn't figure out destination host!");
-                return;
-            }
-            catch (IOException ioe) {
-                System.err.println("Bad input!");
-                return;
-            }
-
-            try {
-                sock.send(msgDG);
-            } catch (IOException ioe) {
-                System.err.println("Couldn't send message out!");
-                return;
-            }
-
-            long startTime = System.currentTimeMillis();
-
-
-            DatagramPacket ackDG = new DatagramPacket(new byte[BaseKMPPacket.MAXMSGSIZE], BaseKMPPacket.MAXMSGSIZE);
-            InetAddress senderAddr;
-
-
-            while(true) { // read loop
-                if (Thread.interrupted()) {
-                    return;
-                }
-
-
-                byte[] buffer;
-                KMPAcknowledgement ackPKT;
-
-                if (System.currentTimeMillis() - startTime > BaseKMPPacket.INITTIMEOUT) {
-                    try {
-                        sock.send(msgDG);
-                    } catch (IOException ioe) {
-                        System.err.println("Couldn't resend message out!");
-                        continue;
-                    }
-                    startTime = System.currentTimeMillis();
-                }
-
-                try {
-                    ackDG.setLength(BaseKMPPacket.MAXMSGSIZE);
-                    sock.receive(ackDG);
-
-                    senderAddr = ackDG.getAddress();
-                    buffer = ackDG.getData();
-
-                    if(!senderAddr.equals(destination)
-                            || BaseKMPPacket.opcode(buffer) != BaseKMPPacket.ACKop) {
-                        throw new IOException();
-                    }
-
-                    ackPKT = new KMPAcknowledgement(buffer);
-                    if(ackPKT.msgid() != 1) {
-                        throw new IOException();
-                    }
-
-                    break;
-                } catch (IOException ioe) {
-                    System.err.println("Bad receive!");
-                    continue;
-                }
-            }
-
-            // TODO: in the cancel dialog, change saying to "Awaiting response..."
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    chgDialogue.setTitle("Awaiting response...");
-                }
-            });
-
-
-            // TODO: another while loop to receive and process the response
-        }
-
-        // TODO: something that captures clicking of cancel button in the dialog and kills this thread
     }
 
     public ActionBarActivity getActivity(){
@@ -293,35 +162,64 @@ public class RemoteMultiPlayerActivity extends ActionBarActivity {
                 .setTitle("Sending the challenge...")
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        messengerThread.interrupt();
-                        messengerThread = null;
+                        nm.giveUp();
+                        acceptChallenges();
                     }
                 })
                 .setIcon(android.R.drawable.ic_menu_info_details)
                 .show();
     }
 
-    public void recieveChallengeDialogue(final String add){
+    public void receiveChallengeDialogue(final KMPChallenge kmpc, final InetAddress sender)
+    {
+        myName = editTextFirstPlayer.getText().toString();
         new AlertDialog.Builder(this)
-                .setTitle("Challenge Received...")
-                .setMessage("Do you want to accept the challenge?")
+                .setTitle("You've been challenged by " + kmpc.playerName())
+                .setMessage("Would you like to accept the challenge?")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        sendMessage("Accept", add);
-                        Intent intent = new Intent(getActivity(), CheckersSystem.class);
-                        startActivity(intent);
+                        response = true;
+                        responded(kmpc, sender);
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        sendMessage("Reject", add);
+                        response = false;
+                        responded(kmpc, sender);
                     }
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
 
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
+    public void responded(KMPChallenge kmpc, InetAddress sender)
+    {
+        nm = new NetworkMessenger(getActivity(), sock, new NetworkMessenger.NetworkSendCallback() {
+            public void callback() {
+                if (response) {
+                    // TODO START GAME
+                } else {
+                    acceptChallenges();
+                }
+            }
+        }, new KMPResponse(kmpc.msgid() + 1, myName, response), sender);
+        nm.dispatch();
+    }
+
+    public void awaitResponse()
+    {
+        new NetworkListener(this, sock,new NetworkListener.NetworkReturnCallback() {
+            public void callback(NetworkListener origin) {
+                KMPResponse kmpr = (KMPResponse)origin.getKMPPacket();
+                String playerName = kmpr.playerName();
+                String resp = kmpr.response() ? "accepted" : "refused";
+                chgDialogue.setTitle(playerName + " " + resp + " your challenge");
+                if (response){
+                    // TODO START GAME!!!
+                } else {
+                    acceptChallenges();
+                }
+            }
+        }, BaseKMPPacket.RSPop, destaddr, 2).listen();
     }
 }

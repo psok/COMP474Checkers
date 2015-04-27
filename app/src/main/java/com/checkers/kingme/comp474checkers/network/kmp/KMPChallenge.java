@@ -1,6 +1,7 @@
 package com.checkers.kingme.comp474checkers.network.kmp;
 
 import java.io.*;
+import java.util.Arrays;
 
 /**
  * Created by alshaymaaalhazzaa on 3/30/15.
@@ -21,13 +22,13 @@ public class KMPChallenge extends BaseKMPPacket
     }
 
     // constructor to build a packet incoming from the network
-    public KMPChallenge(byte[] buffer) throws IOException
+    public KMPChallenge(byte[] buffer, int length) throws IOException
     {
         byte bufopcode;
         short bufmsgid;
         byte[] bufPName = new byte[20];
 
-        ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
+        ByteArrayInputStream bais = new ByteArrayInputStream(Arrays.copyOf(buffer, length));
         DataInputStream dis = new DataInputStream(bais);
         bufopcode = dis.readByte();
         bufmsgid = dis.readShort();

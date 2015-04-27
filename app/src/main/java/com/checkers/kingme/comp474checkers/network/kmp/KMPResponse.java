@@ -28,14 +28,14 @@ public class KMPResponse extends BaseKMPPacket {
     }
 
     // constructor to build a packet incoming from the network
-    public KMPResponse(byte[] buffer) throws IOException {
+    public KMPResponse(byte[] buffer, int length) throws IOException {
         byte bufopcode;
         short bufmsgid;
         byte[] bufPNameRsp = new byte[21];
         byte bufResponse;
         int nobytes;
 
-        ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
+        ByteArrayInputStream bais = new ByteArrayInputStream(Arrays.copyOf(buffer, length));
         DataInputStream dis = new DataInputStream(bais);
         bufopcode = dis.readByte();
         bufmsgid = dis.readShort();
@@ -49,10 +49,11 @@ public class KMPResponse extends BaseKMPPacket {
         } else if (nobytes == 1) {
             throw new IOException("Player name empty!");
         }
-        bufResponse = bufPNameRsp[bufPNameRsp.length - 1];
+        bufResponse = bufPNameRsp[nobytes - 1];
+
         this.opcode = bufopcode;
         this.msgid = bufmsgid;
-        this.playerName = Arrays.copyOf(bufPNameRsp, bufPNameRsp.length - 1);
+        this.playerName = Arrays.copyOf(bufPNameRsp, nobytes - 1);
         this.response = bufResponse;
     }
 
@@ -88,6 +89,6 @@ public class KMPResponse extends BaseKMPPacket {
      *
      * @return response
      */
-    public boolean getResponse(){return this.response == 1;}
+    public boolean response(){return this.response == 1;}
 
 }
