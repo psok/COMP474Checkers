@@ -521,6 +521,7 @@ public class CheckersGame {
                 if (move != null) {
                     pickUp(move.from());
                     moveTo(move.to());
+                    Log.i("PRIORITY SELECT: ", move.from() + " " + move.to() + " " + move.getPriority());
                 } else {
                     Log.i("PRIORITY SELECT", "Null");
                 }
@@ -824,7 +825,6 @@ public class CheckersGame {
         if (isJump(move.from(), move.to())) {
             board.removePiece(between(move.from(), move.to()));
         }
-        findJumps();
     }
 
     /*
@@ -833,16 +833,19 @@ public class CheckersGame {
      * Background game is a game simulation that will stimulate the gameplay for every given move
      * Depth determines how deep the game will go
      */
-    public void backgroundGame(int[] score, Move move, int depth) {
+    public int backgroundGame(Move move, int depth) {
+        int score = 0;
         PriorityMove p = new PriorityMove();
+        updateBoard(move);
         turn = Color.BLACK;
+        findJumps();
 
         for(int i = 0; i < depth; i++) {
             Vector<Move> myMove = getAllLegalMoves(turn);
+
             // if there's no more legal move or it reaches the depth, calculate the priority
-            if(myMove.size() == 0 || i == depth - 1) {
-                score[0] = p.evaluateBoard(board, Color.RED);
-                score[1] = p.evaluateBoard(board, Color.BLACK);
+            if(myMove.size() == 0) {
+                score = p.evaluateBoard(board, Color.RED);
                 break;
             }
 
@@ -857,14 +860,18 @@ public class CheckersGame {
             }
 
             updateBoard(move);
+
+            if(i == depth - 1) {
+                score = p.evaluateBoard(board, Color.RED);
+            }
+
             if(turn == Color.BLACK) {
-                //score -= move.getPriority();
                 turn = Color.RED;
             } else if (turn == Color.RED) {
-                //score += move.getPriority();
                 turn = Color.BLACK;
             }
         }
+        return score;
     }
 
     /*
@@ -910,23 +917,13 @@ public class CheckersGame {
         PriorityMove pm = new PriorityMove();
 
         for(Move m: myMove) {
-            updateBoard(m);
             int priority = pm.calcPointsRedBeingAttacked(board, m);
-            for(int i=0; i<20; i++) {
-                int[] score = new int[2];
-                backgroundGame(score, m, 1);
-                if(score[0] >= score[1]) {
-                    priority += 10;
-                } else {
-                    priority -= 10;
-                }
-                setBoard(colors, ranks);
-                turn = currentTurn;
-                jumps = currentJumps;
-            }
-            m.setPriority(priority);
+            int scoreAfterSimulation = backgroundGame(m, 3);
+            m.setPriority(priority + scoreAfterSimulation);
             bestMoves = maxPriorityAtTop.insert(m);
-            Log.i("FINAL SCORE: " + turn + " " + m.from(), " " + m.to() + " " + m.getPriority());
+            setBoard(colors, ranks);
+            turn = currentTurn;
+            jumps = currentJumps;
         }
 
         if(bestMoves.length > 0)

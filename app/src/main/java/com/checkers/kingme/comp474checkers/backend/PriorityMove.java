@@ -9,7 +9,7 @@ public class PriorityMove {
     public final int POINT_WON = 200000;
     public final int POINT_KING = 2000;
     public final int POINT_NORMAL = 1000;
-    public final int POINT_ATTACK = 50;
+    public final int POINT_ATTACK = -50;
 
     public int evaluateBoard(CurrentBoard board, Color color) {
         int boardValue = 0;
@@ -68,12 +68,6 @@ public class PriorityMove {
     private int RedBlackPiecesDifferencePoints(CurrentBoard board, Color color) {
 
         int value = 0;
-        Color opponent;
-        if(color == Color.RED) {
-            opponent = Color.BLACK;
-        } else {
-            opponent = Color.RED;
-        }
         // Scan across the board
         for(int i=1; i<=32; i++) {
             if (!board.isEmpty(i) && board.getPiece(i).getColor() == color) {
@@ -81,13 +75,6 @@ public class PriorityMove {
                     value += POINT_KING;
                 } else {
                     value += POINT_NORMAL;
-                }
-            }
-            else if (!board.isEmpty(i) && board.getPiece(i).getColor() == opponent) {
-                if (board.getPiece(i).getRank() == Rank.KING) {
-                    value -= POINT_KING;
-                } else {
-                    value -= POINT_NORMAL;
                 }
             }
         }
@@ -104,7 +91,7 @@ public class PriorityMove {
                 && LR > 0 && board.isEmpty(LR))
                || (UR > 0 && !board.isEmpty(UR) && board.getPiece(UR).getColor() == Color.BLACK
                 && LL > 0 && board.isEmpty(LL))) {
-            point -= POINT_ATTACK;
+            point += POINT_ATTACK;
         }
 
         if((LL > 0 && !board.isEmpty(LL) && board.getPiece(LL).getColor() == Color.BLACK
@@ -113,7 +100,7 @@ public class PriorityMove {
                 || (LR > 0 && !board.isEmpty(LR) && board.getPiece(LR).getColor() == Color.BLACK
                 && board.getPiece(LR).getRank() == Rank.KING
                 && UL > 0 && board.isEmpty(UL))) {
-            point -= POINT_ATTACK;
+            point += POINT_ATTACK;
         }
         return point;
     }
