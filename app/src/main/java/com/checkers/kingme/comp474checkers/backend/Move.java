@@ -6,25 +6,17 @@ import java.util.ArrayList;
  * Created by Richa on 4/12/2015.
  */
 public class Move {
-    private ArrayList<Integer> to;
+    private int to;
     private int from;
     boolean isJump;
     private int priority;
 
-    public Move() {
-        to = new ArrayList<Integer>();
-    }
-
     public int to() {
-        return to.get(0);
+        return to;
     }
 
     public void setTo(int to) {
-        this.to.add(to);
-    }
-
-    public int sizeTo() {
-        return to.size();
+        this.to = to;
     }
 
     public boolean isJump() {
@@ -53,7 +45,7 @@ public class Move {
 
     public void setMove(int from, int to, boolean isJump) {
         this.from = from;
-        this.to.add(to);
+        this.to = to;
         this.isJump = isJump;
     }
 }

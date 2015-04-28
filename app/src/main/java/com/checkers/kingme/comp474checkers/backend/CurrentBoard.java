@@ -2,6 +2,7 @@ package com.checkers.kingme.comp474checkers.backend;
 
 import java.util.List;
 import java.util.Arrays;
+import java.util.Vector;
 
 
 class CurrentBoard
@@ -16,6 +17,10 @@ class CurrentBoard
     protected Piece getPiece(int square)
     {
         return checkersBoard.get(square - 1);
+    }
+
+    protected void setPiece(int square, Piece piece) {
+        checkersBoard.set(square - 1, piece);
     }
 
     protected void movePiece(int from, int to)

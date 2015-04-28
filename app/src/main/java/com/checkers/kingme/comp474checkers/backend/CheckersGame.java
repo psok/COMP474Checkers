@@ -5,8 +5,12 @@ import android.util.Log;
 import com.checkers.kingme.comp474checkers.model.GameListener;
 import com.checkers.kingme.comp474checkers.model.NetworkUpdateObserver;
 
+import org.apache.http.client.RedirectException;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.Vector;
 
 
@@ -517,12 +521,10 @@ public class CheckersGame {
                 if (move != null) {
                     pickUp(move.from());
                     moveTo(move.to());
-                    Log.i("PRIORITY SELECT from", "" + move.from());
-                    Log.i("PRIORITY SELECT to", "" + move.to());
-                    Log.i("PRIORITY SELECT prioriy", "" + move.getPriority());
                 } else {
                     Log.i("PRIORITY SELECT", "Null");
                 }
+
             }
         }
 
@@ -555,11 +557,134 @@ public class CheckersGame {
         }
     }
 
-    public Vector<Move> getAllLegalMoves() {
+    /*
+     * JESSIE 04/26/2015
+     * To be used in AI
+     * To get all legal moves of the given color
+     */
+    public Vector<Move> getAllLegalMoves(Color color) {
+        Vector<Move> myMove = new Vector<>();
+        if (color == Color.BLACK) {
+            myMove = getAllLegalMovesBlack();
+        } else if (color == Color.RED) {
+            myMove = getAllLegalMovesRed();
+        }
+        return myMove;
+    }
+
+    /*
+     * JESSIE 04/26/2015
+     * To be used in AI
+     * To get all legal moves for Black pieces
+     */
+    public Vector<Move> getAllLegalMovesBlack() {
+        Vector<Move> myMove = new Vector<>();
+
+        for (int square = 1; square <= 32; ++square) {
+            //Log.i("kkkk", "" + square + board.getPiece(square));
+            int neighbor, nextNeighbor;
+            if (!board.isEmpty(square) && board.getPiece(square).getColor() == Color.BLACK) {
+                Piece piece = board.getPiece(square);
+                if(jumps) {
+                    if (piece.getRank() == Rank.KING) {
+                        neighbor = checkUL(square);
+                        if (neighbor != 0
+                                && !board.isEmpty(neighbor)
+                                && board.getPiece(neighbor).getColor() != Color.BLACK
+                                && (nextNeighbor = checkUL(neighbor)) != 0
+                                && board.isEmpty(nextNeighbor)) {
+                            Move move = new Move();
+                            move.setMove(square, nextNeighbor, true);
+                            myMove.add(move);
+                        }
+
+                        neighbor = checkUR(square);
+                        if (neighbor != 0
+                                && !board.isEmpty(neighbor)
+                                && board.getPiece(neighbor).getColor() != turn
+                                && (nextNeighbor = checkUR(neighbor)) != 0
+                                && board.isEmpty(nextNeighbor)) {
+                            Move move = new Move();
+                            move.setMove(square, nextNeighbor, true);
+                            myMove.add(move);
+                        }
+                    }
+
+                    if (turn == Color.BLACK) {
+                        neighbor = checkLL(square);
+                        if (neighbor != 0
+                                && !board.isEmpty(neighbor)
+                                && board.getPiece(neighbor).getColor() != turn
+                                && (nextNeighbor = checkLL(neighbor)) != 0
+                                && board.isEmpty(nextNeighbor)) {
+                            Move move = new Move();
+                            move.setMove(square, nextNeighbor, true);
+                            myMove.add(move);
+                        }
+
+                        neighbor = checkLR(square);
+                        if (neighbor != 0
+                                && !board.isEmpty(neighbor)
+                                && board.getPiece(neighbor).getColor() != turn
+                                && (nextNeighbor = checkLR(neighbor)) != 0
+                                && board.isEmpty(nextNeighbor)) {
+                            Move move = new Move();
+                            move.setMove(square, nextNeighbor, true);
+                            myMove.add(move);
+                        }
+                    }
+                } else {
+                    if (piece.getRank() == Rank.KING) {
+                        neighbor = checkUL(square);
+                        if (neighbor != 0
+                                && board.isEmpty(neighbor)) {
+                            Move move = new Move();
+                            move.setMove(square, neighbor, true);
+                            myMove.add(move);
+                        }
+
+                        neighbor = checkUR(square);
+                        if (neighbor != 0
+                                && board.isEmpty(neighbor)) {
+                            Move move = new Move();
+                            move.setMove(square, neighbor, true);
+                            myMove.add(move);
+                        }
+                    }
+
+                    if (turn == Color.BLACK) {
+                        neighbor = checkLL(square);
+                        if (neighbor != 0
+                                && board.isEmpty(neighbor)) {
+                            Move move = new Move();
+                            move.setMove(square, neighbor, true);
+                            myMove.add(move);
+                        }
+
+                        neighbor = checkLR(square);
+                        if (neighbor != 0
+                                && board.isEmpty(neighbor)) {
+                            Move move = new Move();
+                            move.setMove(square, neighbor, true);
+                            myMove.add(move);
+                        }
+                    }
+                }
+            }
+        }
+        return myMove;
+    }
+
+    /*
+     * JESSIE 04/26/2015
+     * To be used in AI
+     * To get all the legal moves for Red pieces
+     */
+    public Vector<Move> getAllLegalMovesRed() {
         Vector<Move> myMove = new Vector<Move>();
 
         for (int square = 1; square <= 32; ++square) {
-            Log.i("kkkk", "" + square + board.getPiece(square));
+            //Log.i("kkkk", "" + square + board.getPiece(square));
             int neighbor, nextNeighbor;
             if (!board.isEmpty(square) && board.getPiece(square).getColor() == Color.RED) {
                 Piece piece = board.getPiece(square);
@@ -653,26 +778,159 @@ public class CheckersGame {
         return myMove;
     }
 
-    public Move getBestMove() {
+    /*
+     * JESSIE 04/26/2015
+     * To be used in AI
+     * To copy the color and rank of each piece of the current board
+     */
+    protected void copyBoard (Color[] colors, Rank[] ranks) {
+        for(int i=0; i<32; i++) {
+            colors[i] = null;
+            ranks[i] = null;
+            if(!board.isEmpty(i+1)) {
+                colors[i] = board.getPiece(i+1).getColor();
+                ranks[i] = board.getPiece(i+1).getRank();
+            }
+        }
+    }
 
-        Vector<Move> myMove = getAllLegalMoves();
+    /*
+     * JESSIE 04/26/2015*
+     * To be used in AI
+     * Set the current board to the original board based on the arrays used to store color and rank
+     * This is to avoid object reference to the previous object
+     */
+    protected void setBoard (Color[] colors, Rank[] ranks) {
+        for(int i=1; i<=32; i++) {
+            board.removePiece(i);
+        }
+        for(int i=1; i<=32; i++) {
+            if(colors[i-1] != null) {
+                board.setPiece(i, new Piece(colors[i-1], ranks[i-1]));
+            }
+        }
+    }
 
-        Move[] bestmoves = new Move[0];
-        DecisionTree maxPriorityAtTop = new DecisionTree(bestmoves, 2);
+    /*
+     * JESSIE 04/26/2015
+     * To be used in AI
+     * Update the board based on the chosen move
+     */
+    public void updateBoard(Move move) {
+        board.movePiece(move.from(), move.to());
+        if (((move.to() >= 1) && (move.to() <= 4)) || ((move.to() >= 29) && (move.to() <= 32))) {
+            board.getPiece(move.to()).crown();
+        }
+        if (isJump(move.from(), move.to())) {
+            board.removePiece(between(move.from(), move.to()));
+        }
+        findJumps();
+    }
+
+    /*
+     * JESSIE 04/26/2015
+     * To be used in AI
+     * Background game is a game simulation that will stimulate the gameplay for every given move
+     * Depth determines how deep the game will go
+     */
+    public void backgroundGame(int[] score, Move move, int depth) {
+        PriorityMove p = new PriorityMove();
+        turn = Color.BLACK;
+
+        for(int i = 0; i < depth; i++) {
+            Vector<Move> myMove = getAllLegalMoves(turn);
+            // if there's no more legal move or it reaches the depth, calculate the priority
+            if(myMove.size() == 0 || i == depth - 1) {
+                score[0] = p.evaluateBoard(board, Color.RED);
+                score[1] = p.evaluateBoard(board, Color.BLACK);
+                break;
+            }
+
+            // if the piece is BLACK, randomly pick the move
+            // otherwise, pick the best move for RED
+            if(turn == Color.BLACK) {
+                Random rnd = new Random();
+                int index = rnd.nextInt(myMove.size());
+                move = myMove.get(index);
+            } else if(turn == Color.RED) {
+                move = getBestMove(turn, myMove);
+            }
+
+            updateBoard(move);
+            if(turn == Color.BLACK) {
+                //score -= move.getPriority();
+                turn = Color.RED;
+            } else if (turn == Color.RED) {
+                //score += move.getPriority();
+                turn = Color.BLACK;
+            }
+        }
+    }
+
+    /*
+     * JESSIE 04/26/2015
+     * To be used in AI
+     * To get the best move among all legal moves of the given piece color
+     */
+    public Move getBestMove(Color color, Vector<Move> myMove) {
+        Color[] colors = new Color[32];
+        Rank[] ranks = new Rank[32];
+        copyBoard(colors, ranks);
+        Move[] bestMoves = new Move[0];
+        DecisionTree maxPriorityAtTop = new DecisionTree(bestMoves, 2);
         PriorityMove p =new PriorityMove();
         int priority;
         for (Move m : myMove) {
-            priority = p.evaluateValueofBoard(board, m);
+            updateBoard(m);
+            priority = p.evaluateBoard(board, color);
             m.setPriority(priority);
-            bestmoves = maxPriorityAtTop.insert(m);
-            Log.i("AIAI From: ", ""+m.from());
-            Log.i("AIAI To: ", ""+m.to());
-            Log.i("AIAI IsJump: ", "" + m.isJump());
-            Log.i("AIAI Priority: ", ""+m.getPriority());
+            bestMoves = maxPriorityAtTop.insert(m);
+            setBoard(colors, ranks);
+        }
+        if(bestMoves.length > 0)
+            return bestMoves[0];
+        else
+            return null;
+    }
+
+    /*
+     * JESSIE 04/26/2015
+     * To be used in AI
+     * To get the best move of Computer player (RED)
+     */
+    public Move getBestMove() {
+        Color currentTurn = turn;
+        Color[] colors = new Color[32];
+        Rank[] ranks = new Rank[32];
+        copyBoard(colors, ranks);
+        Boolean currentJumps = jumps;
+        Vector<Move> myMove = getAllLegalMoves(Color.RED);
+        Move[] bestMoves = new Move[0];
+        DecisionTree maxPriorityAtTop = new DecisionTree(bestMoves, 2);
+        PriorityMove pm = new PriorityMove();
+
+        for(Move m: myMove) {
+            updateBoard(m);
+            int priority = pm.calcPointsRedBeingAttacked(board, m);
+            for(int i=0; i<20; i++) {
+                int[] score = new int[2];
+                backgroundGame(score, m, 1);
+                if(score[0] >= score[1]) {
+                    priority += 10;
+                } else {
+                    priority -= 10;
+                }
+                setBoard(colors, ranks);
+                turn = currentTurn;
+                jumps = currentJumps;
+            }
+            m.setPriority(priority);
+            bestMoves = maxPriorityAtTop.insert(m);
+            Log.i("FINAL SCORE: " + turn + " " + m.from(), " " + m.to() + " " + m.getPriority());
         }
 
-        if(bestmoves.length > 0)
-            return bestmoves[0];
+        if(bestMoves.length > 0)
+            return bestMoves[0];
         else
             return null;
     }

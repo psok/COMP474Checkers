@@ -84,7 +84,7 @@ public class DecisionTree {
             kAr[0] = value;
         } else {
             Move newElement =new Move();
-            System.out.println(value + " is inserted");
+            //System.out.println(value + " is inserted");
 
             kAr = Arrays.copyOf(kAr, n + 1);
             kAr[n] = value;
