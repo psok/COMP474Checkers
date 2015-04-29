@@ -79,21 +79,6 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Back to Menu"
-            android:id="@+id/btnMenu"
-            android:layout_gravity="left"
-            android:onClick="backToMenu" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Game"
-            android:id="@+id/btnNewGame"
-            android:onClick="newGame" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="Resign"
             android:id="@+id/btnResign"
             android:onClick="resign"
